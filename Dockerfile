@@ -26,9 +26,6 @@ COPY . /var/www/html
 # Instalar dependencias PHP
 RUN composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
 
-# Generar clave de aplicación
-RUN php artisan key:generate --force
-
 # Crear base de datos sqlite (si se usa)
 RUN touch database/database.sqlite
 
