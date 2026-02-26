@@ -35,8 +35,8 @@ RUN php artisan migrate --force || true
 # Instalar dependencias JS y compilar assets
 RUN npm install && npm run build
 
-# Establecer permisos sobre storage y cache
-RUN chown -R www-data:www-data storage bootstrap/cache
+# Establecer permisos sobre storage, cache y base de datos
+RUN chown -R www-data:www-data storage bootstrap/cache database
 
 EXPOSE 80
 
