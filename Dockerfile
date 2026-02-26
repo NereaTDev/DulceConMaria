@@ -1,6 +1,6 @@
 # Dockerfile para desplegar DulceConMaria (Laravel + Vite) en Render
 
-FROM php:8.3-apache
+FROM php:8.4-apache
 
 # Instalar dependencias del sistema necesarias para PHP, Composer y Vite
 RUN apt-get update && apt-get install -y \
