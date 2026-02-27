@@ -1,5 +1,11 @@
 <x-guest-layout>
-    <div class="min-h-screen w-full flex items-center justify-center bg-[#FFF5FB] px-4">
+    <div class="min-h-screen w-full flex flex-col items-center justify-center bg-[#FFF5FB] px-4">
+        <div class="w-full max-w-md mb-4 flex justify-start">
+            <a href="{{ url()->previous() }}" class="inline-flex items-center gap-2 text-xs text-[#7B6B75] hover:text-[#FF4B88]">
+                <span class="inline-block h-5 w-5 rounded-full border border-[#F7D2E4] flex items-center justify-center text-[11px]">←</span>
+                <span>Volver</span>
+            </a>
+        </div>
         <div class="max-w-md w-full bg-white border border-[#F7D2E4] rounded-3xl shadow-sm p-6 md:p-8">
             <div class="flex flex-col items-center mb-6 text-center">
                 <img src="/assets/Logo.png" alt="DulceConMaría" class="h-12 w-auto mb-3" />
