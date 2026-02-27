@@ -17,9 +17,13 @@ use App\Http\Controllers\Admin\EnrollmentController as AdminEnrollmentController
 // Endpoint temporal para lanzar migraciones en producción
 // PROTEGER con un secreto en la URL y BORRAR después de usar.
 Route::get('/__setup-migrate-9f3b7c2d', function () {
-    Artisan::call('migrate', ['--force' => true]);
-    Artisan::call('db:seed', ['--force' => true]);
-    return 'Migrations and seeders executed.';
+    try {
+        Artisan::call('migrate', ['--force' => true]);
+        Artisan::call('db:seed', ['--force' => true]);
+        return 'Migrations and seeders executed.';
+    } catch (\Throwable $e) {
+        return 'ERROR: '.$e->getMessage();
+    }
 });
 
 // Home pública
