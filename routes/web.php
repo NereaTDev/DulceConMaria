@@ -74,3 +74,10 @@ Route::prefix('admin')
     });
 
 require __DIR__.'/auth.php';
+
+// Ruta temporal para ejecutar migraciones en producción (2026-02-27)
+// IMPORTANTE: eliminarla cuando las migraciones estén aplicadas.
+Route::get('/__run-migrations-20260227', function () {
+    \Artisan::call('migrate', ['--force' => true]);
+    return 'Migrations executed.<br><pre>'.e(\Artisan::output()).'</pre>';
+});
