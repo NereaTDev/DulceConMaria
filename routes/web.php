@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Artisan;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RecipeController;
 use App\Http\Controllers\CourseController;
@@ -12,6 +13,14 @@ use App\Http\Controllers\Admin\LessonController as AdminLessonController;
 use App\Http\Controllers\Admin\RecipeController as AdminRecipeController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Admin\EnrollmentController as AdminEnrollmentController;
+
+// Endpoint temporal para lanzar migraciones en producción
+// PROTEGER con un secreto en la URL y BORRAR después de usar.
+Route::get('/__setup-migrate-9f3b7c2d', function () {
+    Artisan::call('migrate', ['--force' => true]);
+    Artisan::call('db:seed', ['--force' => true]);
+    return 'Migrations and seeders executed.';
+});
 
 // Home pública
 Route::get('/', function () {
