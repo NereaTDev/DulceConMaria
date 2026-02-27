@@ -46,9 +46,15 @@
                             Mi campus
                         </a>
                     @endguest
-                    <a href="{{ url('/') }}#cta" class="relative text-white bg-[#F990B7] px-4 py-1 rounded-full overflow-hidden">
-                        <span class="relative z-10">Inscribirme</span>
-                    </a>
+                    @guest
+                        <a href="{{ route('register') }}" class="relative text-white bg-[#F990B7] px-4 py-1 rounded-full overflow-hidden">
+                            <span class="relative z-10">Inscribirme</span>
+                        </a>
+                    @else
+                        <a href="{{ route('campus') }}" class="relative text-white bg-[#F990B7] px-4 py-1 rounded-full overflow-hidden">
+                            <span class="relative z-10">Entrar al campus</span>
+                        </a>
+                    @endguest
                 </div>
 
                 {{-- Botón menú móvil --}}
@@ -85,7 +91,7 @@
             <x-mobile-menu menu-id="main" title="Menú" :links="$mainMenuLinks" />
         </header>
 
-        <main class="flex-1 pt-20">
+        <main class="flex-1 pt-14">
             @yield('content')
         </main>
 
