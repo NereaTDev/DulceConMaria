@@ -24,11 +24,14 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
+        // Autenticar credenciales
         $request->authenticate();
 
+        // Regenerar ID de sesión para evitar fijación de sesión
         $request->session()->regenerate();
 
-        return redirect()->intended(route('dashboard', absolute: false));
+        // Redirigir siempre al campus tras login
+        return redirect()->route('campus');
     }
 
     /**
