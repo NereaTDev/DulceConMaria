@@ -88,6 +88,7 @@
     </main>
 </div>
 
+{{-- Desactivado temporalmente: el service worker estaba cacheando contenido del panel admin
 <script>
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', function () {
@@ -98,5 +99,6 @@
         });
     }
 </script>
+--}}
 </body>
 </html>
