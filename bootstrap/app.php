@@ -16,5 +16,9 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        // Aquí puedes personalizar el manejo de excepciones si lo necesitas
+        $exceptions->reportable(static function (Throwable $e): void {
+            if (app()->bound('honeybadger')) {
+                app('honeybadger')->notify($e, app('request'));
+            }
+        });
     })->create();
