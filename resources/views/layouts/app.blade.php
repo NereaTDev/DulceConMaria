@@ -10,8 +10,8 @@
     <meta name="theme-color" content="#F990B7">
     <link rel="manifest" href="/manifest.webmanifest">
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
-    <link rel="apple-touch-icon" sizes="192x192" href="/icons/icon-192x192.png">
-    <link rel="apple-touch-icon" sizes="512x512" href="/icons/icon-512x512.png">
+    {{-- Icono principal para iOS / PWA --}}
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
