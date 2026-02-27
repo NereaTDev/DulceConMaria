@@ -1,5 +1,5 @@
 <x-guest-layout>
-    <div class="min-h-screen flex items-center justify-center bg-[#FFF5FB] px-4">
+    <div class="min-h-screen w-full flex items-center justify-center bg-[#FFF5FB] px-4">
         <div class="max-w-md w-full bg-white border border-[#F7D2E4] rounded-3xl shadow-sm p-6 md:p-8">
             <div class="flex flex-col items-center mb-6 text-center">
                 <img src="/assets/Logo.png" alt="DulceConMaría" class="h-12 w-auto mb-3" />
