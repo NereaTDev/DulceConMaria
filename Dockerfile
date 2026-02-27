@@ -32,6 +32,9 @@ RUN touch database/database.sqlite
 # Ejecutar migraciones (no fallar si ya existen)
 RUN php artisan migrate --force || true
 
+# Limpiar cachés de Laravel para que use siempre la config/rutas/vistas recientes
+RUN php artisan config:clear && php artisan route:clear && php artisan view:clear
+
 # Instalar dependencias JS y compilar assets
 RUN npm install && npm run build
 
