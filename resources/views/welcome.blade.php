@@ -147,7 +147,7 @@
     <section id="cta" class="relative w-full mt-8">
         <div class="w-full min-h-screen md:h-screen bg-cover bg-center" style="background-image: url('/assets/Rectangle 19.png')"></div>
         <div class="absolute inset-0 flex items-center justify-center">
-            <div class="w-full max-w-3xl md:w-1/2 px-6">
+            <div class="w-full max-w-4xl md:w-4/5 px-6">
                 <div class="p-2 md:p-5">
                     <h2 class="text-white font-black text-[28px] md:text-[42px] mb-2 w-4/5">
                         ¡Conviértete en un experto chocolatero!
@@ -158,9 +158,9 @@
                     <p class="text-[#f7b3cc] text-[16px] md:text-[22px] italic font-semibold mt-4 w-3/4">
                         Contáctanos hoy mismo para más información y reserva tu lugar.
                     </p>
-                    <div class="mt-5 inline-block bg-[#f7b3cc] text-white text-[18px] md:text-[20px] font-semibold px-6 py-2 rounded-full cursor-pointer">
+                    <a href="{{ route('login') }}" class="mt-5 inline-block bg-[#f7b3cc] text-white text-[18px] md:text-[20px] font-semibold px-6 py-2 rounded-full cursor-pointer">
                         Inscribirme
-                    </div>
+                    </a>
                 </div>
             </div>
         </div>

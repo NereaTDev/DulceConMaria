@@ -37,16 +37,24 @@
                 <p class="text-[11px] text-[#7B6B75] truncate">{{ $user->email }}</p>
             </div>
 
-            {{-- Enlace al campus (siempre) --}}
-            <a href="{{ route('campus') }}" class="block px-3 py-1.5 hover:bg-[#FFF5FB]">Mi campus</a>
+            {{-- Enlace al campus (solo si no estamos ya en una URL de campus) --}}
+            @if(! request()->is('campus*'))
+                <a href="{{ route('campus') }}" class="block px-3 py-1.5 hover:bg-[#FFF5FB]">Mi campus</a>
+            @endif
 
-            {{-- Solo en variante full (campus) mostramos panel admin + perfil --}}
-            @if(! $isCompact)
-                @if($user->role === 'admin')
-                    <a href="{{ route('admin.dashboard') }}" class="block px-3 py-1.5 hover:bg-[#FFF5FB]">Panel admin</a>
+            {{-- Si es admin, acceso al panel siempre --}}
+            @if($user->role === 'admin')
+                <a href="{{ route('admin.dashboard') }}" class="block px-3 py-1.5 hover:bg-[#FFF5FB]">Panel admin</a>
+
+                {{-- Desde campus, opción para volver a la web --}}
+                @if(request()->is('campus*'))
+                    <a href="{{ url('/') }}" class="block px-3 py-1.5 hover:bg-[#FFF5FB]">Volver a la web</a>
                 @endif
+            @endif
 
-                <a href="{{ route('profile.edit') }}" class="block px-3 py-1.5 hover:bg-[#FFF5FB]">Perfil</a>
+            {{-- Solo en variante full (campus) mostramos enlace al perfil --}}
+            @if(! $isCompact)
+                <a href="{{ route('campus.profile.edit') }}" class="block px-3 py-1.5 hover:bg-[#FFF5FB]">Perfil</a>
             @endif
 
             {{-- Cerrar sesión --}}

@@ -11,7 +11,7 @@
             <!-- Session Status -->
             <x-auth-session-status class="mb-4" :status="session('status')" />
 
-            <form method="POST" action="{{ route('login') }}" class="space-y-4">
+            <form method="POST" action="{{ route('login') }}" class="space-y-4" x-data="{ submitting: false }" @submit="submitting = true">
                 @csrf
 
                 <!-- Email Address -->
@@ -44,7 +44,9 @@
                 </div>
 
                 <div class="pt-2">
-                    <button type="submit" class="w-full inline-flex items-center justify-center rounded-full bg-[#F990B7] text-white px-4 py-2.5 text-sm font-semibold hover:bg-[#FF4B88] transition">
+                    <button type="submit"
+                            class="w-full inline-flex items-center justify-center rounded-full bg-[#F990B7] text-white px-4 py-2.5 text-sm font-semibold hover:bg-[#FF4B88] transition disabled:opacity-60 disabled:cursor-not-allowed"
+                            :disabled="submitting">
                         Entrar al campus
                     </button>
                 </div>

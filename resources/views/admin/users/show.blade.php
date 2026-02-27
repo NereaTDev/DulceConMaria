@@ -11,10 +11,21 @@
         </div>
     @endif
 
-    <div class="bg-white border border-slate-200 rounded-lg shadow-sm p-4 mb-8 text-sm">
-        <p><span class="font-semibold">Nombre:</span> {{ $user->name }}</p>
-        <p><span class="font-semibold">Email:</span> {{ $user->email }}</p>
-        <p><span class="font-semibold">Rol:</span> {{ $user->role }}</p>
+    <div class="bg-white border border-slate-200 rounded-lg shadow-sm p-4 mb-8 text-sm grid md:grid-cols-2 gap-4">
+        <div>
+            <p><span class="font-semibold">Nombre:</span> {{ $user->name }}</p>
+            <p><span class="font-semibold">Email:</span> {{ $user->email }}</p>
+            <p><span class="font-semibold">Teléfono:</span> {{ $user->phone ?? '—' }}</p>
+            <p><span class="font-semibold">Rol:</span> {{ $user->role }}</p>
+        </div>
+        <div>
+            <p><span class="font-semibold">Ciudad:</span> {{ $user->city ?? '—' }}</p>
+            <p><span class="font-semibold">País:</span> {{ $user->country ?? '—' }}</p>
+            <p><span class="font-semibold">Instagram:</span> {{ $user->instagram ?? '—' }}</p>
+            @if($user->notes)
+                <p class="mt-2"><span class="font-semibold">Notas:</span> {{ $user->notes }}</p>
+            @endif
+        </div>
 
         <div class="mt-4 flex gap-3">
             <a href="{{ route('admin.users.edit', $user) }}" class="inline-flex items-center rounded-md bg-pink-500 px-3 py-1.5 text-xs font-semibold text-white hover:bg-pink-600">Editar usuario</a>

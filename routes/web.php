@@ -29,20 +29,32 @@ Route::get('/campus', [CampusController::class, 'index'])
 
 // Rutas que requieren login
 Route::middleware('auth')->group(function () {
-    // Página privada del curso por slug
-    Route::get('/curso/{slug}', [CourseController::class, 'show'])->name('courses.show');
+    // Página privada del curso por slug (dentro del campus)
+    Route::get('/campus/curso/{slug}', [CourseController::class, 'show'])->name('campus.courses.show');
 
     // Vista privada de una lección
     Route::get('/campus/leccion/{lesson}', [FrontLessonController::class, 'show'])
         ->name('campus.lessons.show');
+
+    // Alias temporal para no romper enlaces antiguos a /curso/{slug}
+    Route::get('/curso/{slug}', function (string $slug) {
+        return redirect()->route('campus.courses.show', ['slug' => $slug]);
+    })->name('courses.show');
 
     // Después de login, redirige al campus
     Route::get('/dashboard', function () {
         return redirect()->route('campus');
     })->name('dashboard');
 
-    // Perfil de usuario (Breeze)
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    // Perfil de usuario (dentro del campus)
+    Route::get('/campus/profile', [ProfileController::class, 'edit'])->name('campus.profile.edit');
+    Route::patch('/campus/profile', [ProfileController::class, 'update'])->name('campus.profile.update');
+    Route::delete('/campus/profile', [ProfileController::class, 'destroy'])->name('campus.profile.destroy');
+
+    // Alias temporal para no romper enlaces antiguos a /profile
+    Route::get('/profile', function () {
+        return redirect()->route('campus.profile.edit');
+    })->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });

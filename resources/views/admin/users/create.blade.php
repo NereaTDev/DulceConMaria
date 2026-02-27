@@ -14,10 +14,35 @@
             @error('name') <p class="text-xs text-red-600 mt-1">{{ $message }}</p> @enderror
         </div>
 
-        <div>
-            <label class="block text-sm font-medium mb-1">Email</label>
-            <input type="email" name="email" value="{{ old('email') }}" class="w-full border rounded px-3 py-2 text-sm" required>
-            @error('email') <p class="text-xs text-red-600 mt-1">{{ $message }}</p> @enderror
+        <div class="grid md:grid-cols-2 gap-4">
+            <div>
+                <label class="block text-sm font-medium mb-1">Email</label>
+                <input type="email" name="email" value="{{ old('email') }}" class="w-full border rounded px-3 py-2 text-sm" required>
+                @error('email') <p class="text-xs text-red-600 mt-1">{{ $message }}</p> @enderror
+            </div>
+            <div>
+                <label class="block text-sm font-medium mb-1">Teléfono</label>
+                <input type="text" name="phone" value="{{ old('phone') }}" class="w-full border rounded px-3 py-2 text-sm" placeholder="+34 ...">
+                @error('phone') <p class="text-xs text-red-600 mt-1">{{ $message }}</p> @enderror
+            </div>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-4">
+            <div>
+                <label class="block text-sm font-medium mb-1">Ciudad</label>
+                <input type="text" name="city" value="{{ old('city') }}" class="w-full border rounded px-3 py-2 text-sm">
+                @error('city') <p class="text-xs text-red-600 mt-1">{{ $message }}</p> @enderror
+            </div>
+            <div>
+                <label class="block text-sm font-medium mb-1">País</label>
+                <input type="text" name="country" value="{{ old('country') }}" class="w-full border rounded px-3 py-2 text-sm">
+                @error('country') <p class="text-xs text-red-600 mt-1">{{ $message }}</p> @enderror
+            </div>
+            <div>
+                <label class="block text-sm font-medium mb-1">Instagram</label>
+                <input type="text" name="instagram" value="{{ old('instagram') }}" class="w-full border rounded px-3 py-2 text-sm" placeholder="@dulceconmaria">
+                @error('instagram') <p class="text-xs text-red-600 mt-1">{{ $message }}</p> @enderror
+            </div>
         </div>
 
         <div class="grid md:grid-cols-2 gap-4">
@@ -41,7 +66,14 @@
             @error('role') <p class="text-xs text-red-600 mt-1">{{ $message }}</p> @enderror
         </div>
 
-        <div class="border-t border-slate-200 pt-4 mt-2">
+        <div class="mt-2">
+            <label class="inline-flex items-center gap-2 text-xs">
+                <input type="checkbox" name="grant_all_courses" value="1" class="rounded border-slate-300 text-pink-500 focus:ring-pink-500">
+                <span>Dar acceso a <strong>todos los cursos actuales</strong> (se crearán inscripciones como <code>paid</code>).</span>
+            </label>
+        </div>
+
+        <div class="border-t border-slate-200 pt-4 mt-4">
             <h2 class="text-sm font-semibold mb-2">Asignar curso (opcional)</h2>
             <p class="text-xs text-slate-500 mb-3">Puedes dejar esta sección vacía si no quieres asignar ningún curso por ahora.</p>
 

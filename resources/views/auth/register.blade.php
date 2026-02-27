@@ -10,7 +10,7 @@
                 </p>
             </div>
 
-            <form method="POST" action="{{ route('register') }}" class="space-y-4">
+            <form method="POST" action="{{ route('register') }}" class="space-y-4" x-data="{ submitting: false }" @submit="submitting = true">
                 @csrf
 
                 <!-- Name -->
@@ -46,7 +46,9 @@
                 </div>
 
                 <div class="pt-2 flex flex-col gap-3 text-xs text-[#7B6B75]">
-                    <button type="submit" class="w-full inline-flex items-center justify-center rounded-full bg-[#F990B7] text-white px-4 py-2.5 text-sm font-semibold hover:bg-[#FF4B88] transition">
+                    <button type="submit"
+                            class="w-full inline-flex items-center justify-center rounded-full bg-[#F990B7] text-white px-4 py-2.5 text-sm font-semibold hover:bg-[#FF4B88] transition disabled:opacity-60 disabled:cursor-not-allowed"
+                            :disabled="submitting">
                         Crear cuenta
                     </button>
                     <p class="text-center">

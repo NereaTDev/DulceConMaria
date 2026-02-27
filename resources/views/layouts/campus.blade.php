@@ -27,11 +27,8 @@
             {{-- Navegación desktop --}}
             <div class="hidden md:flex items-center gap-4 text-xs text-slate-900">
                 <a href="{{ route('campus') }}" class="hover:text-[#FF4B88]">Inicio</a>
-                @if(auth()->user()->role === 'admin')
-                    <a href="{{ url('/') }}" class="hover:text-[#FF4B88]">Volver a la web</a>
-                @endif
 
-                {{-- Acciones de usuario en el campus: perfil, campus, panel admin, logout --}}
+                {{-- Acciones de usuario en el campus: perfil, panel admin, volver a la web, logout --}}
                 @auth
                     <x-profile-menu variant="full" />
                 @endauth

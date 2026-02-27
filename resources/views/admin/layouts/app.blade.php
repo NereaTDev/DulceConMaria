@@ -72,7 +72,7 @@
                 <p class="px-2 py-1">Conectado como: <span class="font-semibold">{{ auth()->user()->email }}</span></p>
                 <div class="flex flex-col gap-1 text-[11px] text-sm">
                     <a href="{{ url('/') }}" class="text-slate-900 hover:text-pink-300 hover:underline hover:decoration-pink-300 underline-offset-2 px-2 py-1">Volver a la web</a>
-                    <a href="{{ route('campus') }}" class="text-slate-900 hover:text-pink-300 hover:underline hover:decoration-pink-300 underline-offset-2 px-2 py-1">Mi campus</a>
+                    <a href="{{ route('campus') }}" class="text-slate-900 hover:text-pink-300 hover:underline hover:decoration-pink-300 underline-offset-2 px-2 py-1">Campus</a>
                     <form action="{{ route('logout') }}" method="POST" class="mt-1">
                         @csrf
                         <button type="submit" class="text-red-500 hover:text-red-600 px-2 py-4">Cerrar sesión</button>
