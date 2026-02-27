@@ -34,37 +34,42 @@ class UserController extends Controller
             'instagram'             => ['nullable','string','max:100'],
             'password'              => ['required','string','min:8','confirmed'],
             'role'                  => ['required','in:user,admin'],
-            'course_id'             => ['nullable','exists:courses,id'],
+            'course_ids'            => ['nullable','array'],
+            'course_ids.*'          => ['exists:courses,id'],
             'enrollment_status'     => ['nullable','in:pending,paid,cancelled'],
             'grant_all_courses'     => ['nullable','boolean'],
         ]);
 
         $user = User::create([
-            'name'      => $data['name'],
-            'email'     => $data['email'],
-            'phone'     => $data['phone'] ?? null,
-            'city'      => $data['city'] ?? null,
-            'country'   => $data['country'] ?? null,
-            'instagram' => $data['instagram'] ?? null,
-            'password'  => Hash::make($data['password']),
-            'role'      => $data['role'],
+            'name'              => $data['name'],
+            'email'             => $data['email'],
+            'phone'             => $data['phone'] ?? null,
+            'city'              => $data['city'] ?? null,
+            'country'           => $data['country'] ?? null,
+            'instagram'         => $data['instagram'] ?? null,
+            'notes'             => $data['notes'] ?? null,
+            'grant_all_courses' => !empty($data['grant_all_courses']),
+            'password'          => Hash::make($data['password']),
+            'role'              => $data['role'],
         ]);
 
-        // Si se selecciona curso, crear inscripción opcionalmente
-        if (! empty($data['course_id'])) {
+        // Si se seleccionan cursos, crear inscripciones opcionalmente
+        if (! empty($data['course_ids'])) {
             $status = $data['enrollment_status'] ?? 'pending';
 
-            $enrollment = new Enrollment([
-                'user_id'   => $user->id,
-                'course_id' => $data['course_id'],
-                'status'    => $status,
-            ]);
+            foreach ($data['course_ids'] as $courseId) {
+                $enrollment = new Enrollment([
+                    'user_id'   => $user->id,
+                    'course_id' => $courseId,
+                    'status'    => $status,
+                ]);
 
-            if ($status === 'paid') {
-                $enrollment->paid_at = now();
+                if ($status === 'paid') {
+                    $enrollment->paid_at = now();
+                }
+
+                $enrollment->save();
             }
-
-            $enrollment->save();
         }
 
         // Si se marca "acceso a todos los cursos", crear inscripciones pagadas
@@ -114,18 +119,21 @@ class UserController extends Controller
             'notes'    => ['nullable','string'],
             'password' => ['nullable','string','min:8','confirmed'],
             'role'     => ['required','in:user,admin'],
+            'course_ids'   => ['nullable','array'],
+            'course_ids.*' => ['exists:courses,id'],
             'grant_all_courses' => ['nullable','boolean'],
         ]);
 
         $update = [
-            'name'      => $data['name'],
-            'email'     => $data['email'],
-            'phone'     => $data['phone'] ?? null,
-            'city'      => $data['city'] ?? null,
-            'country'   => $data['country'] ?? null,
-            'instagram' => $data['instagram'] ?? null,
-            'notes'     => $data['notes'] ?? null,
-            'role'      => $data['role'],
+            'name'              => $data['name'],
+            'email'             => $data['email'],
+            'phone'             => $data['phone'] ?? null,
+            'city'              => $data['city'] ?? null,
+            'country'           => $data['country'] ?? null,
+            'instagram'         => $data['instagram'] ?? null,
+            'notes'             => $data['notes'] ?? null,
+            'grant_all_courses' => !empty($data['grant_all_courses']),
+            'role'              => $data['role'],
         ];
 
         if (! empty($data['password'])) {
@@ -133,6 +141,16 @@ class UserController extends Controller
         }
 
         $user->update($update);
+
+        // Si se seleccionan cursos en edición, crear inscripciones pagadas para ellos (sin duplicar)
+        if (! empty($data['course_ids'])) {
+            foreach ($data['course_ids'] as $courseId) {
+                Enrollment::firstOrCreate(
+                    ['user_id' => $user->id, 'course_id' => $courseId],
+                    ['status' => 'paid', 'paid_at' => now()]
+                );
+            }
+        }
 
         // Si se marca "acceso a todos los cursos", asegurar inscripciones para todos los cursos
         if (! empty($data['grant_all_courses'])) {

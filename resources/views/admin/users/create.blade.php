@@ -68,7 +68,7 @@
 
         <div class="mt-2">
             <label class="inline-flex items-center gap-2 text-xs">
-                <input type="checkbox" name="grant_all_courses" value="1" class="rounded border-slate-300 text-pink-500 focus:ring-pink-500">
+                <input type="checkbox" name="grant_all_courses" value="1" class="rounded border-slate-300 text-pink-500 focus:ring-pink-500" @checked(old('grant_all_courses'))>
                 <span>Dar acceso a <strong>todos los cursos actuales</strong> (se crearán inscripciones como <code>paid</code>).</span>
             </label>
         </div>
@@ -80,12 +80,12 @@
             <div class="grid md:grid-cols-2 gap-4">
                 <div>
                     <label class="block text-xs font-medium mb-1">Curso</label>
-                    <select name="course_id" class="w-full border rounded px-3 py-2 text-sm">
-                        <option value="">-- Ninguno --</option>
+                    <select name="course_ids[]" multiple class="w-full border rounded px-3 py-2 text-sm">
                         @foreach($courses as $course)
-                            <option value="{{ $course->id }}" @selected(old('course_id') == $course->id)>{{ $course->title }}</option>
+                            <option value="{{ $course->id }}" @selected(collect(old('course_ids'))->contains($course->id))>{{ $course->title }}</option>
                         @endforeach
                     </select>
+                    <p class="mt-1 text-[11px] text-slate-500">Puedes seleccionar varios cursos manteniendo pulsado Ctrl/Cmd.</p>
                 </div>
                 <div>
                     <label class="block text-xs font-medium mb-1">Estado de la inscripción</label>

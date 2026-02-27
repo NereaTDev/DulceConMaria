@@ -75,41 +75,44 @@
 
         <div class="mt-2">
             <label class="inline-flex items-center gap-2 text-xs">
-                <input type="checkbox" name="grant_all_courses" value="1" class="rounded border-slate-300 text-pink-500 focus:ring-pink-500">
+                <input type="checkbox" name="grant_all_courses" value="1" class="rounded border-slate-300 text-pink-500 focus:ring-pink-500" @checked(old('grant_all_courses', $user->grant_all_courses))>
                 <span>Dar acceso a <strong>todos los cursos actuales</strong> (se crearán inscripciones como <code>paid</code> para los que falten).</span>
             </label>
         </div>
 
         <div class="border-t border-slate-200 pt-4 mt-4">
-            <h2 class="text-sm font-semibold mb-2">Asignar curso (opcional)</h2>
-            <p class="text-xs text-slate-500 mb-3">Puedes asignar cursos adicionales a este usuario desde aquí.</p>
+            <h2 class="text-sm font-semibold mb-2">Cursos del usuario</h2>
+            <p class="text-xs text-slate-500 mb-2">Selecciona cursos para asociarlos a este usuario. No se eliminarán inscripciones existentes, solo se añadirán las nuevas.</p>
 
-            <form action="{{ route('admin.enrollments.store') }}" method="POST" class="flex flex-wrap items-end gap-3 text-sm">
-                @csrf
-                <input type="hidden" name="user_id" value="{{ $user->id }}">
-
+            <div class="grid md:grid-cols-2 gap-4">
                 <div>
-                    <label class="block text-xs font-medium mb-1">Curso</label>
-                    <select name="course_id" class="border rounded px-2 py-1 text-sm">
+                    <label class="block text-xs font-medium mb-1">Cursos a asociar</label>
+                    @php
+                        $enrolledIds = $enrollments->pluck('course_id')->all();
+                    @endphp
+                    <select name="course_ids[]" multiple class="w-full border rounded px-3 py-2 text-sm">
                         @foreach(\App\Models\Course::orderBy('title')->get() as $courseOption)
-                            <option value="{{ $courseOption->id }}">{{ $courseOption->title }}</option>
+                            <option value="{{ $courseOption->id }}" @selected(in_array($courseOption->id, old('course_ids', $enrolledIds)))>
+                                {{ $courseOption->title }}
+                            </option>
                         @endforeach
                     </select>
+                    <p class="mt-1 text-[11px] text-slate-500">Puedes seleccionar varios cursos manteniendo pulsado Ctrl/Cmd.</p>
                 </div>
 
-                <div>
-                    <label class="block text-xs font-medium mb-1">Estado</label>
-                    <select name="status" class="border rounded px-2 py-1 text-sm">
-                        <option value="pending">pending</option>
-                        <option value="paid">paid</option>
-                        <option value="cancelled">cancelled</option>
-                    </select>
+                <div class="text-xs text-slate-600">
+                    <p class="font-semibold mb-1">Cursos actuales del usuario:</p>
+                    @if($enrollments->isEmpty())
+                        <p class="text-slate-500">Este usuario todavía no tiene cursos asociados.</p>
+                    @else
+                        <ul class="list-disc list-inside space-y-0.5">
+                            @foreach($enrollments as $enrollment)
+                                <li>{{ $enrollment->course?->title ?? 'Curso eliminado' }} ({{ $enrollment->status }})</li>
+                            @endforeach
+                        </ul>
+                    @endif
                 </div>
-
-                <button type="submit" class="inline-flex items-center rounded-md bg-pink-500 px-3 py-1.5 text-xs font-semibold text-white hover:bg-pink-600">
-                    Asociar curso
-                </button>
-            </form>
+            </div>
         </div>
 
         <div class="flex gap-3 mt-6">

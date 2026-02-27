@@ -19,8 +19,13 @@ class User extends Authenticatable
         'country',
         'instagram',
         'notes',
+        'grant_all_courses',
         'password',
         'role',
+    ];
+
+    protected $casts = [
+        'grant_all_courses' => 'boolean',
     ];
 
     protected $hidden = [
