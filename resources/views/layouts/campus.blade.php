@@ -25,22 +25,16 @@
             </div>
 
             {{-- Navegación desktop --}}
-            <div class="hidden md:flex items-center gap-4 text-xs text-[#5B4A54]">
+            <div class="hidden md:flex items-center gap-4 text-xs text-slate-900">
                 <a href="{{ route('campus') }}" class="hover:text-[#FF4B88]">Inicio</a>
-                <a href="{{ url('/') }}" class="hover:text-[#FF4B88]">Volver a la web</a>
-                <span class="cursor-not-allowed opacity-50">Mi progreso</span>
-                <span class="cursor-not-allowed opacity-50">Soporte</span>
+                @if(auth()->user()->role === 'admin')
+                    <a href="{{ url('/') }}" class="hover:text-[#FF4B88]">Volver a la web</a>
+                @endif
+
+                {{-- Acciones de usuario en el campus: perfil, campus, panel admin, logout --}}
                 @auth
-                    @if(auth()->user()->role === 'admin')
-                        <a href="{{ route('admin.dashboard') }}" class="text-[#F990B7] hover:text-[#FF4B88]">Panel admin</a>
-                    @endif
+                    <x-profile-menu variant="full" />
                 @endauth
-                <form method="POST" action="{{ route('logout') }}" class="inline">
-                    @csrf
-                    <button type="submit" class="text-[#F990B7] hover:text-[#FF4B88]">
-                        Cerrar sesión
-                    </button>
-                </form>
             </div>
 
             {{-- Botón menú móvil (igual estilo que la web) --}}

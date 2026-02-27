@@ -41,21 +41,15 @@
                         <a href="{{ route('login') }}" class="text-[#F990B7] hover:scale-110 hover:text-[#F5387E] transition">
                             Iniciar sesión
                         </a>
-                    @else
-                        <a href="{{ route('campus') }}" class="text-[#F990B7] hover:scale-110 hover:text-[#F5387E] transition">
-                            Mi campus
-                        </a>
-                    @endguest
-                    @guest
                         <a href="{{ route('register') }}" class="relative text-white bg-[#F990B7] px-4 py-1 rounded-full overflow-hidden">
                             <span class="relative z-10">Inscribirme</span>
                         </a>
                     @else
-                        <a href="{{ route('campus') }}" class="relative text-white bg-[#F990B7] px-4 py-1 rounded-full overflow-hidden">
-                            <span class="relative z-10">Entrar al campus</span>
-                        </a>
+                        {{-- Si está logueada, avatar compacto con acceso al campus y logout --}}
+                        <x-profile-menu variant="compact" />
                     @endguest
                 </div>
+
 
                 {{-- Botón menú móvil --}}
                 <button id="main-menu-toggle" class="md:hidden inline-flex items-center justify-center rounded-full border border-[#F7D2E4] p-2 text-[#F990B7] bg-white/80">

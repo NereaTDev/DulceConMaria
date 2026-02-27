@@ -58,7 +58,6 @@
     <aside class="md:flex md:flex-col md:w-64 bg-white border-r border-slate-200 flex flex-col md:h-screen md:sticky md:top-0 md:block hidden" id="admin-sidebar">
         <div class="flex items-center justify-between p-4 text-sm border-b border-slate-200 hidden md:flex">
             <span class="text-pink-600 font-bold">Admin · DulceConMaría</span>
-            <a href="{{ url('/') }}" class="text-xs text-slate-600 border border-slate-200 rounded-full px-3 py-1 hover:bg-slate-50">Volver a la web</a>
         </div>
         <nav class="flex-1 px-4 py-4 space-y-2 text-sm">
             <a href="{{ route('admin.dashboard') }}" class="block rounded px-2 py-1 hover:bg-pink-50">Dashboard</a>
@@ -70,10 +69,10 @@
         </nav>
         @auth
             <div class="px-4 py-3 text-xs border-t border-slate-200 space-y-2">
-                <p class="px-2 py-1">Conectado como <span class="font-semibold">{{ auth()->user()->email }}</span></p>
+                <p class="px-2 py-1">Conectado como: <span class="font-semibold">{{ auth()->user()->email }}</span></p>
                 <div class="flex flex-col gap-1 text-[11px] text-sm">
-                    <a href="{{ url('/') }}" class="text-slate-900 hover:text-pink-500 hover:underline hover:decoration-pink-500 underline-offset-2 px-2 py-1">Volver a la web</a>
-                    <a href="{{ route('campus') }}" class="text-slate-900 hover:text-pink-500 hover:underline hover:decoration-pink-500 underline-offset-2 px-2 py-1">Mi campus</a>
+                    <a href="{{ url('/') }}" class="text-slate-900 hover:text-pink-300 hover:underline hover:decoration-pink-300 underline-offset-2 px-2 py-1">Volver a la web</a>
+                    <a href="{{ route('campus') }}" class="text-slate-900 hover:text-pink-300 hover:underline hover:decoration-pink-300 underline-offset-2 px-2 py-1">Mi campus</a>
                     <form action="{{ route('logout') }}" method="POST" class="mt-1">
                         @csrf
                         <button type="submit" class="text-red-500 hover:text-red-600 px-2 py-4">Cerrar sesión</button>
