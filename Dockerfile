@@ -5,8 +5,9 @@ FROM php:8.4-apache
 # Instalar dependencias del sistema necesarias para PHP, Composer y Vite
 RUN apt-get update && apt-get install -y \
     git unzip libpng-dev libonig-dev libxml2-dev libzip-dev curl \
+    libpq-dev \
     nodejs npm \
-    && docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd zip \
+    && docker-php-ext-install pdo pdo_mysql pdo_pgsql mbstring exif pcntl bcmath gd zip \
     && a2enmod rewrite \
     && rm -rf /var/lib/apt/lists/*
 
