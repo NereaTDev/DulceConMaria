@@ -9,9 +9,12 @@
 @endphp
 
 @if($user)
-    <div class="relative" x-data="{ open: false }">
+    <div class="relative" id="profile-menu-wrapper">
         {{-- Botón avatar --}}
-        <button @click="open = !open" class="inline-flex items-center gap-2 rounded-full border border-[#F7D2E4] bg-white/80 px-2 py-1 text-xs text-[#5B4A54] hover:border-[#F990B7] hover:text-[#F990B7]">
+        <button
+            type="button"
+            id="profile-menu-trigger"
+            class="inline-flex items-center gap-2 rounded-full border border-[#F7D2E4] bg-white/80 px-2 py-1 text-xs text-[#5B4A54] hover:border-[#F990B7] hover:text-[#F990B7]">
             <span class="inline-flex h-7 w-7 items-center justify-center rounded-full bg-[#F990B7] text-[11px] font-semibold text-white">
                 {{ strtoupper(mb_substr($user->name ?? $user->email, 0, 1, 'UTF-8')) }}
             </span>
@@ -25,11 +28,8 @@
 
         {{-- Dropdown --}}
         <div
-            x-cloak
-            x-show="open"
-            @click.away="open = false"
-            @keydown.escape.window="open = false"
-            class="absolute mt-2 w-52 rounded-xl border border-[#F7D2E4]/70 bg-white py-2 text-xs text-[#5B4A54] shadow-lg z-40 {{ $align === 'left' ? 'left-0' : 'right-0' }}"
+            id="profile-menu-panel"
+            class="absolute mt-2 w-52 rounded-xl border border-[#F7D2E4]/70 bg-white py-2 text-xs text-[#5B4A54] shadow-lg z-40 {{ $align === 'left' ? 'left-0' : 'right-0' }} hidden"
         >
             {{-- Cabecera con nombre + email --}}
             <div class="px-3 pb-2 border-b border-[#F7D2E4]/60 mb-1">
@@ -64,4 +64,50 @@
             </form>
         </div>
     </div>
+
+    {{-- Script plano para controlar el dropdown sin depender de Alpine --}}
+    <script>
+        (function () {
+            const trigger = document.getElementById('profile-menu-trigger');
+            const panel = document.getElementById('profile-menu-panel');
+
+            if (!trigger || !panel) return;
+
+            const openPanel = () => {
+                panel.classList.remove('hidden');
+            };
+
+            const closePanel = () => {
+                panel.classList.add('hidden');
+            };
+
+            const togglePanel = (event) => {
+                event.stopPropagation();
+                if (panel.classList.contains('hidden')) {
+                    openPanel();
+                } else {
+                    closePanel();
+                }
+            };
+
+            trigger.addEventListener('click', togglePanel);
+
+            // Cerrar al hacer clic fuera
+            document.addEventListener('click', function (event) {
+                if (!panel.classList.contains('hidden')) {
+                    const wrapper = document.getElementById('profile-menu-wrapper');
+                    if (wrapper && !wrapper.contains(event.target)) {
+                        closePanel();
+                    }
+                }
+            });
+
+            // Cerrar con Esc
+            document.addEventListener('keydown', function (event) {
+                if (event.key === 'Escape') {
+                    closePanel();
+                }
+            });
+        })();
+    </script>
 @endif
