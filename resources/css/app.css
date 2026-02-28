@@ -1,3 +1,8 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Ocultar elementos con x-cloak hasta que Alpine esté listo (evita menús abiertos por defecto) */
+[x-cloak] {
+    display: none !important;
+}

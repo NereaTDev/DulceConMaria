@@ -47,7 +47,20 @@
             @forelse ($enrollments as $enrollment)
                 <tr class="border-b border-slate-100">
                     <td class="px-4 py-2">{{ $enrollment->course?->title ?? '—' }}</td>
-                    <td class="px-4 py-2">{{ $enrollment->status }}</td>
+                    <td class="px-4 py-2">
+                        @php
+                            $status = $enrollment->status;
+                            $statusClass = match($status) {
+                                'paid' => 'text-emerald-600',
+                                'pending' => 'text-amber-600',
+                                'cancelled' => 'text-red-600',
+                                default => 'text-slate-600',
+                            };
+                        @endphp
+                        <span class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-semibold {{ $statusClass }} bg-slate-50">
+                            {{ $status }}
+                        </span>
+                    </td>
                     <td class="px-4 py-2">{{ $enrollment->paid_at?->format('d/m/Y H:i') ?? '—' }}</td>
                 </tr>
             @empty

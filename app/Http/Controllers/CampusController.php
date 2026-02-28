@@ -10,8 +10,9 @@ class CampusController extends Controller
     {
         $user = $request->user();
 
-        // Todos los cursos en los que el usuario tiene alguna inscripción
+        // Todos los cursos en los que el usuario tiene inscripciones activas (no canceladas)
         $enrollments = $user->enrollments()
+            ->where('status', '!=', 'cancelled')
             ->with('course.lessons', 'course.recipes')
             ->get();
 

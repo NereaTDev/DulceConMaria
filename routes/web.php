@@ -70,7 +70,8 @@ Route::prefix('admin')
         Route::resource('lessons', AdminLessonController::class)->except(['show']);
         Route::resource('recipes', AdminRecipeController::class)->except(['show']);
         Route::resource('users', AdminUserController::class); // index, create, store, show, edit, update, destroy
-        Route::resource('enrollments', AdminEnrollmentController::class)->only(['index','show','update','store']);
+        // Inscripciones: CRUD completo en admin
+        Route::resource('enrollments', AdminEnrollmentController::class);
     });
 
 require __DIR__.'/auth.php';

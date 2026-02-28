@@ -34,9 +34,6 @@ class UserController extends Controller
             'instagram'             => ['nullable','string','max:100'],
             'password'              => ['required','string','min:8','confirmed'],
             'role'                  => ['required','in:user,admin'],
-            'course_ids'            => ['nullable','array'],
-            'course_ids.*'          => ['exists:courses,id'],
-            'enrollment_status'     => ['nullable','in:pending,paid,cancelled'],
             'grant_all_courses'     => ['nullable','boolean'],
         ]);
 
@@ -52,36 +49,6 @@ class UserController extends Controller
             'password'          => Hash::make($data['password']),
             'role'              => $data['role'],
         ]);
-
-        // Si se seleccionan cursos, crear inscripciones opcionalmente
-        if (! empty($data['course_ids'])) {
-            $status = $data['enrollment_status'] ?? 'pending';
-
-            foreach ($data['course_ids'] as $courseId) {
-                $enrollment = new Enrollment([
-                    'user_id'   => $user->id,
-                    'course_id' => $courseId,
-                    'status'    => $status,
-                ]);
-
-                if ($status === 'paid') {
-                    $enrollment->paid_at = now();
-                }
-
-                $enrollment->save();
-            }
-        }
-
-        // Si se marca "acceso a todos los cursos", crear inscripciones pagadas
-        if (! empty($data['grant_all_courses'])) {
-            $courses = Course::all();
-            foreach ($courses as $course) {
-                Enrollment::firstOrCreate(
-                    ['user_id' => $user->id, 'course_id' => $course->id],
-                    ['status' => 'paid', 'paid_at' => now()]
-                );
-            }
-        }
 
         return redirect()->route('admin.users.show', $user)->with('status', 'Usuario creado correctamente');
     }
