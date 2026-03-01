@@ -57,9 +57,14 @@
                     @if($currentCourse && $courses->count() > 1)
                         <div class="flex flex-wrap gap-1.5 justify-end">
                             @foreach($courses as $course)
-                                <a href="{{ route('courses.show', $course->slug) }}" class="text-[11px] px-2.5 py-1 rounded-full border {{ $course->id === $currentCourse->id ? 'border-[#FF4B88] text-[#FF4B88]' : 'border-[#F7D2E4] text-[#5B4A54]' }}">
-                                    {{ $course->title }}
-                                </a>
+                                @php
+                                    $firstLesson = $course->lessons->sortBy('order')->first();
+                                @endphp
+                                @if($firstLesson)
+                                    <a href="{{ route('campus.lessons.show', $firstLesson) }}" class="text-[11px] px-2.5 py-1 rounded-full border {{ $course->id === $currentCourse->id ? 'border-[#FF4B88] text-[#FF4B88]' : 'border-[#F7D2E4] text-[#5B4A54]' }}">
+                                        {{ $course->title }}
+                                    </a>
+                                @endif
                             @endforeach
                         </div>
                     @endif

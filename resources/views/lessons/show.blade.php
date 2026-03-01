@@ -13,8 +13,13 @@
                     {{ $lesson->title }}
                 </h1>
                 @if($lesson->summary)
-                    <p class="text-sm text-[#5B4A54] mb-4">{{ $lesson->summary }}</p>
+                    <p class="text-sm text-[#5B4A54] mb-2">{{ $lesson->summary }}</p>
                 @endif
+
+                <p class="text-[11px] text-[#7B6B75]">
+                    Progreso del curso: <span class="font-semibold">{{ $completedCount }}/{{ $totalLessons }} lecciones</span>
+                    ({{ $courseProgress }}%)
+                </p>
             </div>
 
             @if($lesson->embed_url)
