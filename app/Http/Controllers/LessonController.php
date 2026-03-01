@@ -90,6 +90,7 @@ class LessonController extends Controller
             ]
         );
 
+        // Log local y notificación a Honeybadger para ver si en producción se está marcando progreso
         Log::info('Lesson progress marked as completed', [
             'user_id'    => $user->id,
             'lesson_id'  => $lesson->id,
@@ -97,6 +98,8 @@ class LessonController extends Controller
             'progress_id'=> $progress->id,
             'env'        => app()->environment(),
         ]);
+
+        report(new \RuntimeException('Lesson progress marked as completed (debug notice)', 0));
 
         return response()->json(['status' => 'ok']);
     }
