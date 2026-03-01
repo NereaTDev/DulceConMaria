@@ -8,8 +8,12 @@ RUN apt-get update && apt-get install -y \
     libpq-dev \
     nodejs npm \
     && docker-php-ext-install pdo pdo_mysql pdo_pgsql mbstring exif pcntl bcmath gd zip \
-    && a2enmod rewrite \
+    && a2enmod rewrite headers \
     && rm -rf /var/lib/apt/lists/*
+
+# Habilitar CORS básico para servir assets (JS/CSS) desde otros orígenes si es necesario
+RUN echo '<IfModule mod_headers.c>\n\n    <Directory "/var/www/html/public">\n        Header set Access-Control-Allow-Origin "*"\n    </Directory>\n\n</IfModule>\n' > /etc/apache2/conf-available/cors-assets.conf \
+    && a2enconf cors-assets
 
 # Configurar document root a /var/www/html/public
 ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
