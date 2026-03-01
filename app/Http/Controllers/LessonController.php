@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Lesson;
+use App\Models\LessonProgress;
 use Illuminate\Http\Request;
 
 class LessonController extends Controller
@@ -42,11 +43,52 @@ class LessonController extends Controller
             ? $lessons[$currentIndex + 1]
             : null;
 
+        // Calcular progreso de curso para el usuario actual
+        $completedCount = LessonProgress::where('user_id', $user->id)
+            ->whereIn('lesson_id', $lessons->pluck('id'))
+            ->count();
+
+        $totalLessons = max($lessons->count(), 1);
+        $courseProgress = round(($completedCount / $totalLessons) * 100);
+
         return view('lessons.show', [
-            'lesson'     => $lesson,
-            'course'     => $course,
-            'prevLesson' => $prevLesson,
-            'nextLesson' => $nextLesson,
+            'lesson'          => $lesson,
+            'course'          => $course,
+            'prevLesson'      => $prevLesson,
+            'nextLesson'      => $nextLesson,
+            'courseProgress'  => $courseProgress,
+            'completedCount'  => $completedCount,
+            'totalLessons'    => $totalLessons,
         ]);
+    }
+
+    public function markProgress(Request $request, Lesson $lesson)
+    {
+        $user = $request->user();
+        $course = $lesson->course;
+
+        // Verificar acceso igual que en show
+        if ($user->role !== 'admin') {
+            $hasAccess = $user->enrollments()
+                ->where('course_id', $course->id)
+                ->where('status', 'paid')
+                ->exists();
+
+            if (! $hasAccess) {
+                abort(403);
+            }
+        }
+
+        LessonProgress::updateOrCreate(
+            [
+                'user_id'   => $user->id,
+                'lesson_id' => $lesson->id,
+            ],
+            [
+                'completed_at' => now(),
+            ]
+        );
+
+        return response()->json(['status' => 'ok']);
     }
 }

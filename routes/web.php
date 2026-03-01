@@ -36,6 +36,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/campus/leccion/{lesson}', [FrontLessonController::class, 'show'])
         ->name('campus.lessons.show');
 
+    // Marcar progreso de una lección (AJAX desde el reproductor)
+    Route::post('/campus/leccion/{lesson}/progreso', [FrontLessonController::class, 'markProgress'])
+        ->name('campus.lessons.progress');
+
     // Alias temporal para no romper enlaces antiguos a /curso/{slug}
     Route::get('/curso/{slug}', function (string $slug) {
         return redirect()->route('campus.courses.show', ['slug' => $slug]);

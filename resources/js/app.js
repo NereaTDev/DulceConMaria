@@ -72,7 +72,118 @@ function showGlobalFormSpinner() {
     overlay.style.opacity = '1';
 }
 
+// --- YouTube IFrame API: marcar progreso de lecciones al 80% ---
+let dcYouTubeApiLoading = false;
+let dcYouTubeApiReadyCallbacks = [];
+
+function dcLoadYouTubeApi(callback) {
+    if (typeof window.YT !== 'undefined' && typeof window.YT.Player !== 'undefined') {
+        callback();
+        return;
+    }
+
+    dcYouTubeApiReadyCallbacks.push(callback);
+
+    if (dcYouTubeApiLoading) return;
+    dcYouTubeApiLoading = true;
+
+    const tag = document.createElement('script');
+    tag.src = 'https://www.youtube.com/iframe_api';
+    const firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+    window.onYouTubeIframeAPIReady = () => {
+        dcYouTubeApiReadyCallbacks.forEach((cb) => cb());
+        dcYouTubeApiReadyCallbacks = [];
+    };
+}
+
+function dcExtractYouTubeId(url) {
+    if (!url) return null;
+
+    // URLs tipo https://www.youtube.com/embed/VIDEO_ID
+    const embedMatch = url.match(/youtube\.com\/embed\/([^?&#]+)/);
+    if (embedMatch) return embedMatch[1];
+
+    // URLs tipo https://youtu.be/VIDEO_ID
+    const shortMatch = url.match(/youtu\.be\/([^?&#]+)/);
+    if (shortMatch) return shortMatch[1];
+
+    // URLs tipo https://www.youtube.com/watch?v=VIDEO_ID
+    const watchMatch = url.match(/[?&]v=([^&#]+)/);
+    if (watchMatch) return watchMatch[1];
+
+    return null;
+}
+
+function dcInitLessonPlayers() {
+    const containers = document.querySelectorAll('[data-lesson-id][data-video-url]');
+    if (!containers.length) return;
+
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+
+    containers.forEach((el) => {
+        const lessonId = el.getAttribute('data-lesson-id');
+        const videoUrl = el.getAttribute('data-video-url');
+        const videoId = dcExtractYouTubeId(videoUrl);
+        if (!lessonId || !videoId) return;
+
+        let reported = false;
+
+        const markCompleted = () => {
+            if (reported || !csrfToken) return;
+            reported = true;
+
+            fetch(`/campus/leccion/${lessonId}/progreso`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken,
+                    'Accept': 'application/json',
+                },
+                body: JSON.stringify({ completed: true }),
+            }).catch(() => {
+                // silencioso; no molestamos al usuario si falla
+            });
+        };
+
+        const player = new window.YT.Player(el.id, {
+            videoId,
+            playerVars: {
+                rel: 0,
+                modestbranding: 1,
+            },
+            events: {
+                onReady: (event) => {
+                    const duration = event.target.getDuration();
+                    if (!duration || duration <= 0) return;
+
+                    const interval = setInterval(() => {
+                        if (reported) {
+                            clearInterval(interval);
+                            return;
+                        }
+                        const currentTime = event.target.getCurrentTime();
+                        if (currentTime && currentTime >= 0.8 * duration) {
+                            markCompleted();
+                            clearInterval(interval);
+                        }
+                    }, 5000); // cada 5s es suficiente
+                },
+            },
+        });
+    });
+}
+
 window.addEventListener('DOMContentLoaded', () => {
+    // Inicializar YouTube IFrame API si hay lecciones con vídeo
+    const hasLessonVideos = document.querySelector('[data-lesson-id][data-video-url]');
+    if (hasLessonVideos) {
+        dcLoadYouTubeApi(() => {
+            dcInitLessonPlayers();
+        });
+    }
+
     document.addEventListener('submit', (event) => {
         const form = event.target;
         if (!(form instanceof HTMLFormElement)) return;

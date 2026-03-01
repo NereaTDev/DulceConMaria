@@ -19,12 +19,12 @@
 
             @if($lesson->embed_url)
                 <div class="aspect-video w-full rounded-xl overflow-hidden border border-[#F7D2E4] bg-black mb-4">
-                    <iframe
-                        src="{{ $lesson->embed_url }}"
+                    <div
+                        id="lesson-video-{{ $lesson->id }}"
                         class="w-full h-full"
-                        frameborder="0"
-                        allowfullscreen
-                    ></iframe>
+                        data-lesson-id="{{ $lesson->id }}"
+                        data-video-url="{{ $lesson->embed_url }}"
+                    ></div>
                 </div>
             @else
                 <div class="h-40 rounded-xl border border-dashed border-[#F7D2E4] flex items-center justify-center mb-4 bg-[#FFF5FB]">
