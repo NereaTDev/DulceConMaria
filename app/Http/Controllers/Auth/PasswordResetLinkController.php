@@ -42,9 +42,20 @@ class PasswordResetLinkController extends Controller
         }
 
         // En este punto el correo existe: enviamos el enlace de reseteo usando el broker de contraseñas.
-        $status = Password::sendResetLink(
-            $request->only('email')
-        );
+        try {
+            $status = Password::sendResetLink(
+                $request->only('email')
+            );
+        } catch (\Throwable $e) {
+            // Si falla el SMTP u otro error interno, no queremos un 500 en la cara del usuario.
+            report($e);
+
+            return back()
+                ->withInput($request->only('email'))
+                ->withErrors([
+                    'email' => 'Ha ocurrido un problema al enviar el correo de recuperación. Inténtalo de nuevo en unos minutos.',
+                ]);
+        }
 
         return $status == Password::RESET_LINK_SENT
                     ? back()->with('status', __($status))
