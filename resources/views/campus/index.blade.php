@@ -17,10 +17,9 @@
                             {{ $currentCourse->title }}
                         </p>
                         @php
-                            $totalLessons = $currentCourse->lessons->count();
-                            // Placeholder: 0 completadas hasta que tengas el dato real de progreso
-                            $completedLessons = 0;
-                            $progressPercent = $totalLessons > 0 ? round(($completedLessons / $totalLessons) * 100) : 0;
+                            $totalLessons = $currentCourse?->lessons?->count() ?? 0;
+                            $completedLessons = $currentCourseProgress['completed'] ?? 0;
+                            $progressPercent = $currentCourseProgress['percent'] ?? 0;
                         @endphp
                         @if($totalLessons > 0)
                             <div class="mt-2">
