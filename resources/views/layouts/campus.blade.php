@@ -12,7 +12,9 @@
     {{-- Icono principal para iOS / PWA --}}
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @unless(app()->environment('testing'))
+        @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @endunless
 </head>
 <body class="bg-[#FFF5FB] text-slate-900">
 <div class="min-h-screen flex flex-col">
