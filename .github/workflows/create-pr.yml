@@ -30,7 +30,7 @@ jobs:
 
             - No merges directos a `main`.
             - Asegúrate de que los tests pasan antes de aprobar.
-          base: main
+          base: dev
           branch: "${GITHUB_REF#refs/heads/}"
           draft: false
           labels: |
