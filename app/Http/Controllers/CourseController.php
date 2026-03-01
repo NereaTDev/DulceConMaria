@@ -15,19 +15,22 @@ class CourseController extends Controller
 
         $user = $request->user();
 
-        // Admin siempre tiene acceso
-        if ($user && $user->role === 'admin') {
-            return view('courses.show', ['course' => $course]);
-        }
+        $hasAccess = false;
 
-        // Usuarios normales: sólo con inscripción pagada
-        if (! $user || ! $user->enrollments()
+        // Admin siempre tiene acceso completo al curso
+        if ($user && $user->role === 'admin') {
+            $hasAccess = true;
+        } elseif ($user) {
+            // Usuarios normales: acceso sólo con inscripción pagada
+            $hasAccess = $user->enrollments()
                 ->where('course_id', $course->id)
                 ->where('status', 'paid')
-                ->exists()) {
-            abort(403);
+                ->exists();
         }
 
-        return view('courses.show', ['course' => $course]);
+        return view('courses.show', [
+            'course'    => $course,
+            'hasAccess' => $hasAccess,
+        ]);
     }
 }
