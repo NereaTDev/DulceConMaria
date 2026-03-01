@@ -24,12 +24,19 @@
 
                 <div class="aspect-video w-full rounded-xl overflow-hidden border border-[#F7D2E4] bg-black mb-4">
                     @if($isYoutube)
-                        <div
+                        @php
+                            $embed = $lesson->embed_url;
+                            $ytUrl = str_contains($embed, '?') ? $embed . '&enablejsapi=1' : $embed . '?enablejsapi=1';
+                        @endphp
+                        <iframe
                             id="lesson-video-{{ $lesson->id }}"
+                            src="{{ $ytUrl }}"
                             class="w-full h-full"
+                            frameborder="0"
+                            allowfullscreen
                             data-lesson-id="{{ $lesson->id }}"
                             data-video-url="{{ $lesson->embed_url }}"
-                        ></div>
+                        ></iframe>
                     @else
                         <iframe
                             src="{{ $lesson->embed_url }}"
