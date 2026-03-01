@@ -154,21 +154,15 @@ function dcInitLessonPlayers() {
                 modestbranding: 1,
             },
             events: {
-                onReady: (event) => {
-                    const duration = event.target.getDuration();
-                    if (!duration || duration <= 0) return;
-
-                    const interval = setInterval(() => {
-                        if (reported) {
-                            clearInterval(interval);
-                            return;
-                        }
-                        const currentTime = event.target.getCurrentTime();
-                        if (currentTime && currentTime >= 0.8 * duration) {
-                            markCompleted();
-                            clearInterval(interval);
-                        }
-                    }, 5000); // cada 5s es suficiente
+                // En lugar de depender de intervalos y getDuration, marcamos la lección
+                // como completada cuando el vídeo llega al final. Es un criterio aún
+                // más estricto que el 80 % y más robusto en producción.
+                onStateChange: (event) => {
+                    if (reported) return;
+                    const state = event.data;
+                    if (state === window.YT.PlayerState.ENDED) {
+                        markCompleted();
+                    }
                 },
             },
         });
