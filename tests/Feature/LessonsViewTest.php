@@ -50,7 +50,7 @@ class LessonsViewTest extends TestCase
 
         $response->assertStatus(200);
         $response->assertSee('id="lesson-video-'.$lesson->id.'"', false);
-        $response->assertDontSee('<iframe', false);
+        $response->assertSee('<iframe', false);
     }
 
     public function test_lesson_with_non_youtube_url_renders_iframe(): void
