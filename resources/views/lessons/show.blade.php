@@ -18,13 +18,26 @@
             </div>
 
             @if($lesson->embed_url)
+                @php
+                    $isYoutube = \Illuminate\Support\Str::contains($lesson->embed_url, ['youtube.com', 'youtu.be']);
+                @endphp
+
                 <div class="aspect-video w-full rounded-xl overflow-hidden border border-[#F7D2E4] bg-black mb-4">
-                    <div
-                        id="lesson-video-{{ $lesson->id }}"
-                        class="w-full h-full"
-                        data-lesson-id="{{ $lesson->id }}"
-                        data-video-url="{{ $lesson->embed_url }}"
-                    ></div>
+                    @if($isYoutube)
+                        <div
+                            id="lesson-video-{{ $lesson->id }}"
+                            class="w-full h-full"
+                            data-lesson-id="{{ $lesson->id }}"
+                            data-video-url="{{ $lesson->embed_url }}"
+                        ></div>
+                    @else
+                        <iframe
+                            src="{{ $lesson->embed_url }}"
+                            class="w-full h-full"
+                            frameborder="0"
+                            allowfullscreen
+                        ></iframe>
+                    @endif
                 </div>
             @else
                 <div class="h-40 rounded-xl border border-dashed border-[#F7D2E4] flex items-center justify-center mb-4 bg-[#FFF5FB]">
