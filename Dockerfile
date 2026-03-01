@@ -36,8 +36,8 @@ RUN php artisan migrate --force || true
 # Limpiar cachés de Laravel para que use siempre la config/rutas/vistas recientes
 RUN php artisan config:clear && php artisan route:clear && php artisan view:clear
 
-# Instalar dependencias JS y compilar assets
-RUN npm install && npm run build
+# Instalar dependencias JS y compilar assets (modo producción)
+RUN npm install && npm run prod
 
 # Establecer permisos sobre storage, cache y base de datos
 RUN chown -R www-data:www-data storage bootstrap/cache database
