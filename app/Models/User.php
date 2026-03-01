@@ -83,7 +83,7 @@ class User extends Authenticatable implements CanResetPassword
             $fromEmail = env('MAIL_FROM_ADDRESS', 'no-reply@dulceconmaria.com');
             $fromName = env('MAIL_FROM_NAME', 'DulceConMaría');
 
-            Http::withHeaders([
+            $response = Http::withHeaders([
                 'api-key' => $apiKey,
                 'accept' => 'application/json',
                 'content-type' => 'application/json',
@@ -102,6 +102,12 @@ class User extends Authenticatable implements CanResetPassword
                     'resetUrl' => $resetUrl,
                 ])->render(),
             ]);
+
+            if ($response->failed()) {
+                report(new \RuntimeException(
+                    'Brevo API error '.$response->status().': '.$response->body()
+                ));
+            }
         } catch (\Throwable $e) {
             // Si falla la llamada HTTP, lo registramos pero no bloqueamos el flujo.
             report($e);

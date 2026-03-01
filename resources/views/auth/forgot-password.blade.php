@@ -10,8 +10,12 @@
                 </p>
             </div>
 
-            <!-- Session Status -->
-            <x-auth-session-status class="mb-4" :status="session('status')" />
+            @if (session('status'))
+                <div class="mb-4 rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs text-emerald-800">
+                    <span class="font-semibold">¡Listo!</span>
+                    <span class="ml-1">Te hemos enviado un correo con el enlace para restablecer tu contraseña. Revisa tu bandeja de entrada (y la carpeta de spam) para continuar.</span>
+                </div>
+            @endif
 
             <form method="POST" action="{{ route('password.email') }}" class="space-y-4">
                 @csrf
