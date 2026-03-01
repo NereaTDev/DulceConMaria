@@ -27,7 +27,8 @@ class AuthenticationTest extends TestCase
         ]);
 
         $this->assertAuthenticated();
-        $response->assertRedirect(route('dashboard', absolute: false));
+        // En esta app el dashboard redirige al campus
+        $response->assertRedirect(route('campus'));
     }
 
     public function test_users_can_not_authenticate_with_invalid_password(): void

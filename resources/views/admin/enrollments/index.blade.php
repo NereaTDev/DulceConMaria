@@ -5,7 +5,12 @@
 @section('content')
     <div class="flex items-center justify-between mb-6">
         <h1 class="text-2xl font-semibold">Inscripciones</h1>
-        @if (Route::has('admin.enrollments.create'))
+        @if (
+            Route::has('admin.enrollments.create') &&
+            auth()->check() &&
+            auth()->user()->role === 'admin' &&
+            (bool) (auth()->user()->grant_all_courses ?? false)
+        )
             <a href="{{ route('admin.enrollments.create') }}" class="inline-flex items-center rounded-md bg-pink-500 px-3 py-1.5 text-sm font-semibold text-white hover:bg-pink-600">
                 Nueva inscripción
             </a>

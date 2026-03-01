@@ -1,0 +1,115 @@
+name: tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  phpunit:
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: password
+          MYSQL_DATABASE: testing
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 --silent" \
+          --health-interval=10s \
+          --health-timeout=5s \
+          --health-retries=3
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: mbstring, intl, pdo_mysql, gd
+          coverage: none
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@v4
+        with:
+          path: vendor
+          key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-php-
+
+      - name: Install dependencies
+        run: |
+          composer install --no-progress --no-interaction --prefer-dist
+
+      - name: Create .env.testing
+        run: |
+          cp .env.example .env.testing
+          php artisan key:generate --env=testing
+          php artisan config:clear
+
+      - name: Run migrations (testing database)
+        env:
+          DB_CONNECTION: sqlite
+          DB_DATABASE: ':memory:'
+        run: |
+          php artisan migrate --env=testing --database=sqlite
+
+      - name: Run PHPUnit tests
+        env:
+          DB_CONNECTION: sqlite
+          DB_DATABASE: ':memory:'
+        run: |
+          php artisan test
+
+  dusk:
+    runs-on: ubuntu-latest
+    needs: phpunit
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: mbstring, intl, pdo_mysql, gd
+          coverage: none
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@v4
+        with:
+          path: vendor
+          key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-php-
+
+      - name: Install dependencies (including Dusk)
+        run: |
+          composer install --no-progress --no-interaction --prefer-dist
+
+      - name: Create .env.dusk.local
+        run: |
+          cp .env.example .env.dusk.local
+          php artisan key:generate --env=dusk.local
+
+      - name: Start Laravel development server
+        env:
+          APP_ENV: dusk.local
+          APP_URL: http://127.0.0.1:8000
+        run: |
+          php artisan serve --env=dusk.local --host=127.0.0.1 --port=8000 > storage/logs/serve.log 2>&1 &
+          sleep 10
+
+      - name: Run Laravel Dusk tests (headless Chrome)
+        env:
+          APP_ENV: dusk.local
+          APP_URL: http://127.0.0.1:8000
+          DB_CONNECTION: sqlite
+          DB_DATABASE: ':memory:'
+        run: |
+          php artisan dusk --env=dusk.local

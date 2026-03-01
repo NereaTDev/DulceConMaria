@@ -26,6 +26,7 @@ class RegistrationTest extends TestCase
         ]);
 
         $this->assertAuthenticated();
-        $response->assertRedirect(route('dashboard', absolute: false));
+        // En esta app el dashboard redirige al campus
+        $response->assertRedirect(route('campus'));
     }
 }
