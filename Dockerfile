@@ -48,4 +48,5 @@ RUN chown -R www-data:www-data storage bootstrap/cache database
 
 EXPOSE 80
 
-CMD ["apache2-foreground"]
+# Ejecutar migraciones en el arranque del contenedor y luego arrancar Apache
+CMD ["sh", "-c", "php artisan migrate --force && apache2-foreground"]
