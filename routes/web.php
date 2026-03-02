@@ -19,6 +19,11 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+// Páginas legales
+Route::view('/privacidad', 'legal.privacy')->name('privacy');
+Route::view('/aviso-legal', 'legal.legal')->name('legal');
+Route::view('/cookies', 'legal.cookies')->name('cookies');
+
 // Recetario pública
 Route::get('/recetario', [RecipeController::class, 'index'])->name('recipes.index');
 
