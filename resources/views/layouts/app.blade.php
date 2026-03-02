@@ -92,9 +92,11 @@
             @yield('content')
         </main>
 
-        {{-- Modal de onboarding del campus (solo para usuarias verificadas que aún no lo han visto) --}}
+        {{-- Modal de onboarding del campus (solo en rutas de campus) --}}
         @auth
-            <x-onboarding-modal :user="auth()->user()" />
+            @if(request()->is('campus') || request()->is('campus/*'))
+                <x-onboarding-modal :user="auth()->user()" />
+            @endif
         @endauth
 
         <footer class="border-t border-[#F7D2E4] bg-[#FFF5FB] mt-10">
