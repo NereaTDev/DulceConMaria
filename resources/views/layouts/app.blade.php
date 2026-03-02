@@ -40,6 +40,9 @@
                     <span class="text-[#F990B7] hover:scale-110 hover:text-[#F5387E] transition cursor-not-allowed opacity-60">
                         Blog
                     </span>
+                    <a href="{{ route('contact.show') }}" class="text-[#F990B7] hover:scale-110 hover:text-[#F5387E] transition">
+                        Contacto
+                    </a>
                     @guest
                         <a href="{{ route('login') }}" class="text-[#F990B7] hover:scale-110 hover:text-[#F5387E] transition">
                             Iniciar sesión
@@ -69,6 +72,7 @@
                     ['label' => 'Curso', 'href' => url('/') . '#hero'],
                     ['label' => 'Recetas', 'href' => route('recipes.index')],
                     ['label' => 'Blog (próximamente)'],
+                    ['label' => 'Contacto', 'href' => route('contact.show')],
                 ];
 
                 // Enlaces inferiores (cross: campus / admin / login)

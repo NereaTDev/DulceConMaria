@@ -6,6 +6,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RecipeController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\CampusController;
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\LessonController as FrontLessonController;
 use App\Http\Controllers\OnboardingController;
 use App\Http\Controllers\Admin\DashboardController;
@@ -19,6 +20,10 @@ use App\Http\Controllers\Admin\EnrollmentController as AdminEnrollmentController
 Route::get('/', function () {
     return view('welcome');
 });
+
+// Página de contacto
+Route::get('/contacto', [ContactController::class, 'show'])->name('contact.show');
+Route::post('/contacto', [ContactController::class, 'store'])->name('contact.store');
 
 // Páginas legales
 Route::view('/privacidad', 'legal.privacy')->name('privacy');
