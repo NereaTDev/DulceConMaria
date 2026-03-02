@@ -29,11 +29,11 @@ Route::get('/recetario', [RecipeController::class, 'index'])->name('recipes.inde
 
 // Campus privado (área de alumno)
 Route::get('/campus', [CampusController::class, 'index'])
-    ->middleware(['auth'])
+    ->middleware(['auth', 'verified'])
     ->name('campus');
 
-// Rutas que requieren login
-Route::middleware('auth')->group(function () {
+// Rutas que requieren login y email verificado
+Route::middleware(['auth', 'verified'])->group(function () {
     // Página privada del curso por slug (dentro del campus)
     Route::get('/campus/curso/{slug}', [CourseController::class, 'show'])->name('campus.courses.show');
 
