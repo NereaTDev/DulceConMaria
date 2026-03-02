@@ -13,7 +13,8 @@
     <div class="bg-white w-full max-w-md mx-4 rounded-3xl border border-[#F7D2E4] shadow-[0_10px_30px_rgba(15,23,42,0.12)] p-6">
         <div class="flex justify-between items-start mb-3">
             <h2 class="text-lg font-semibold text-[#2B1A22]">
-                Bienvenida al campus de DulceConMaría
+                <span x-show="mode === 'intro'">Bienvenida al campus de DulceConMaría</span>
+                <span x-show="mode === 'full'" class="uppercase">TUTORIAL DEL CAMPUS</span>
             </h2>
             <button type="button" class="text-[#7B6B75] text-sm" @click="open = false">
                 ×
