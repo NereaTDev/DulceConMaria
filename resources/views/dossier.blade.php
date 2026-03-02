@@ -53,9 +53,6 @@
                     <a href="#cta" class="inline-flex items-center justify-center rounded-full bg-[#F990B7] px-6 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-[#F5387E] transition">
                         Volver a la información del curso
                     </a>
-                    <a href="{{ route('contact.show') }}" class="inline-flex items-center justify-center rounded-full border border-[#F990B7] px-6 py-2.5 text-sm font-semibold text-[#F990B7] bg-white hover:bg-[#FFF5FB] transition">
-                        Tengo dudas, quiero hablar
-                    </a>
                 </div>
             </div>
         </div>
