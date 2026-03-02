@@ -30,7 +30,9 @@ class OnboardingController extends Controller
                 'dismissed_onboarding_at' => null,
             ])->save();
 
-            return back();
+            // Redirigimos siempre al campus sin query string para que
+            // no se vuelva a forzar la apertura del modal.
+            return redirect()->route('campus');
         }
 
         if ($action === 'skip') {
@@ -38,9 +40,10 @@ class OnboardingController extends Controller
                 'dismissed_onboarding_at' => now(),
             ])->save();
 
-            return back();
+            // Igual: volvemos al campus limpio para evitar bucles.
+            return redirect()->route('campus');
         }
 
-        return back();
+        return redirect()->route('campus');
     }
 }
