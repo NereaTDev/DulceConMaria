@@ -25,7 +25,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td style="font-size:13px;line-height:1.5;color:#5b4a54;padding-bottom:20px;">
+                    <td style="font-size:13px;line-height:1.5;color:#5b4a54;padding-bottom:16px;">
                         @if(!empty($user->name))
                             Hola {{ $user->name }},
                             <br><br>
@@ -35,23 +35,24 @@
                         @endif
                         ¡Gracias por registrarte en el campus de DulceConMaría!<br>
                         Antes de entrar a tus contenidos, necesitamos que confirmes que este correo es tuyo.
-                        Solo tienes que hacer clic en el botón de abajo.
+                        Usa este código de <strong>6 dígitos</strong> en la página de verificación del campus:
                     </td>
                 </tr>
                 <tr>
                     <td align="center" style="padding-bottom:20px;">
-                        <a href="{{ $verificationUrl }}" style="display:inline-block;background-color:#f990b7;color:#ffffff;text-decoration:none;font-size:14px;font-weight:600;padding:10px 22px;border-radius:9999px;">
-                            Confirmar mi correo y entrar al campus
-                        </a>
+                        <span style="display:inline-block;margin:8px 0;font-size:22px;font-weight:700;letter-spacing:0.25em;color:#2b1a22;">
+                            {{ $verificationCode ?? '------' }}
+                        </span>
                     </td>
                 </tr>
                 <tr>
                     <td style="font-size:12px;line-height:1.5;color:#7b6b75;padding-bottom:16px;">
-                        Si el botón no funciona, puedes introducir este código en la página de verificación de correo del campus:
-                        <br>
-                        <span style="display:inline-block;margin:8px 0;font-size:18px;font-weight:700;letter-spacing:0.2em;color:#2b1a22;">
-                            {{ $verificationCode ?? '------' }}
-                        </span>
+                        También puedes hacer clic en este botón para ir a la página de verificación del campus
+                        (si no has iniciado sesión, te pedirá que entres primero):
+                        <br><br>
+                        <a href="{{ $verificationUrl }}" style="display:inline-block;background-color:#f990b7;color:#ffffff;text-decoration:none;font-size:14px;font-weight:600;padding:10px 22px;border-radius:9999px;">
+                            Ir a la página para introducir el código
+                        </a>
                     </td>
                 </tr>
                 <tr>
