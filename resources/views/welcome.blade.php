@@ -159,8 +159,8 @@
                     <p class="text-[#f7b3cc] text-[16px] md:text-[22px] italic font-semibold mt-4 w-3/4">
                         Contáctanos hoy mismo para más información y reserva tu lugar.
                     </p>
-                    <a href="{{ route('login') }}" class="mt-5 inline-block bg-[#f7b3cc] text-white text-[18px] md:text-[20px] font-semibold px-6 py-2 rounded-full cursor-pointer">
-                        Inscribirme
+                    <a href="{{ route('contact.show') }}" class="mt-5 inline-block bg-[#f7b3cc] text-white text-[18px] md:text-[20px] font-semibold px-6 py-2 rounded-full cursor-pointer">
+                        Contáctanos
                     </a>
                 </div>
             </div>
