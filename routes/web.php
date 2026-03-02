@@ -7,6 +7,7 @@ use App\Http\Controllers\RecipeController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\CampusController;
 use App\Http\Controllers\LessonController as FrontLessonController;
+use App\Http\Controllers\OnboardingController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\CourseController as AdminCourseController;
 use App\Http\Controllers\Admin\LessonController as AdminLessonController;
@@ -31,6 +32,11 @@ Route::get('/recetario', [RecipeController::class, 'index'])->name('recipes.inde
 Route::get('/campus', [CampusController::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('campus');
+
+// Página de tutorial / onboarding del campus
+Route::get('/campus/tutorial', [OnboardingController::class, 'show'])
+    ->middleware(['auth', 'verified'])
+    ->name('campus.onboarding');
 
 // Rutas que requieren login y email verificado
 Route::middleware(['auth', 'verified'])->group(function () {
@@ -82,6 +88,11 @@ Route::prefix('admin')
         // Inscripciones: CRUD completo en admin
         Route::resource('enrollments', AdminEnrollmentController::class);
     });
+
+// Onboarding del campus: marcar como completado u omitido
+Route::post('/onboarding/complete', [OnboardingController::class, 'complete'])
+    ->middleware(['auth', 'verified'])
+    ->name('onboarding.complete');
 
 require __DIR__.'/auth.php';
 

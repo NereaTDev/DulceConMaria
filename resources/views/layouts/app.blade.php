@@ -92,6 +92,11 @@
             @yield('content')
         </main>
 
+        {{-- Modal de onboarding del campus (solo para usuarias verificadas que aún no lo han visto) --}}
+        @auth
+            <x-onboarding-modal :user="auth()->user()" />
+        @endauth
+
         <footer class="border-t border-[#F7D2E4] bg-[#FFF5FB] mt-10">
             <div class="max-w-5xl mx-auto px-4 py-6 text-xs text-[#7B6B75] flex flex-col md:flex-row md:items-center md:justify-between gap-2">
                 <p>DulceConMaría - {{ date('Y') }} © · Todos los derechos reservados.</p>
