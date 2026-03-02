@@ -37,8 +37,8 @@ RUN touch database/database.sqlite
 # Ejecutar migraciones (no fallar si ya existen)
 RUN php artisan migrate --force || true
 
-# Limpiar cachés de Laravel para que use siempre la config/rutas/vistas recientes
-RUN php artisan config:clear && php artisan route:clear && php artisan view:clear
+# Optimizar cachés de Laravel para producción (config, rutas, vistas)
+RUN php artisan config:cache && php artisan route:cache && php artisan view:cache
 
 # Instalar dependencias JS y compilar assets (modo producción)
 RUN npm install && npm run prod
