@@ -10,6 +10,7 @@ use Illuminate\Auth\Passwords\CanResetPassword as CanResetPasswordTrait;
 use Illuminate\Contracts\Auth\CanResetPassword;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Auth\Notifications\ResetPassword as ResetPasswordNotification;
 use App\Notifications\WelcomeEmailVerification;
 
@@ -58,12 +59,68 @@ class User extends Authenticatable implements CanResetPassword, MustVerifyEmail
     }
 
     /**
-     * Enviar el email de verificación de correo (bienvenida) usando
-     * la notificación personalizada WelcomeEmailVerification.
+     * Enviar el email de verificación de correo (bienvenida).
+     *
+     * - Usa la notificación estándar de Laravel (WelcomeEmailVerification)
+     *   para mantener compatibilidad con tests y mailer por defecto.
+     * - Además intenta enviarlo vía API HTTP de Brevo, igual que el
+     *   restablecimiento de contraseña, para no depender sólo de SMTP.
      */
     public function sendEmailVerificationNotification(): void
     {
+        // Notificación estándar (usada por los tests y por el mailer de Laravel).
         $this->notify(new WelcomeEmailVerification());
+
+        // Envío adicional vía API HTTP de Brevo si hay API key configurada.
+        $apiKey = env('BREVO_API_KEY');
+
+        if (! $apiKey) {
+            return;
+        }
+
+        try {
+            // Construimos la URL de verificación igual que hace VerifyEmail.
+            $verificationUrl = URL::temporarySignedRoute(
+                'verification.verify',
+                now()->addMinutes(config('auth.verification.expire', 60)),
+                [
+                    'id' => $this->getKey(),
+                    'hash' => sha1($this->getEmailForVerification()),
+                ]
+            );
+
+            $fromEmail = env('MAIL_FROM_ADDRESS', 'no-reply@dulceconmaria.com');
+            $fromName = env('MAIL_FROM_NAME', 'DulceConMaría');
+
+            $response = Http::withHeaders([
+                'api-key' => $apiKey,
+                'accept' => 'application/json',
+                'content-type' => 'application/json',
+            ])->post('https://api.brevo.com/v3/smtp/email', [
+                'sender' => [
+                    'email' => $fromEmail,
+                    'name'  => $fromName,
+                ],
+                'to' => [[
+                    'email' => $this->email,
+                    'name'  => $this->name ?? $this->email,
+                ]],
+                'subject' => 'Bienvenida a DulceConMaría – Confirma tu correo',
+                'htmlContent' => view('emails.welcome-verification', [
+                    'user'            => $this,
+                    'verificationUrl' => $verificationUrl,
+                ])->render(),
+            ]);
+
+            if ($response->failed()) {
+                report(new \RuntimeException(
+                    'Brevo API error '.$response->status().': '.$response->body()
+                ));
+            }
+        } catch (\Throwable $e) {
+            // Si falla la llamada HTTP, lo registramos pero no bloqueamos el flujo.
+            report($e);
+        }
     }
 
     /**
