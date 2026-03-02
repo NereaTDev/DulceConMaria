@@ -27,7 +27,7 @@
                         <span class="block mt-3 text-[#FF4B88] font-semibold">¡Inscríbete ahora y despierta tu creatividad dulce!</span>
                     </p>
                     <div class="mt-2">
-                        <x-cta-button href="#cta">Descargar dossier</x-cta-button>
+                        <x-cta-button href="{{ route('dossier.show') }}">Descargar dossier</x-cta-button>
                     </div>
                 </div>
             </div>
