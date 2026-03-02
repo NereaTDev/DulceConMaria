@@ -54,10 +54,8 @@
                 ['label' => 'Soporte (próximamente)'],
             ];
 
-            // Enlaces inferiores (cross: web / panel)
-            $campusBottomLinks = [
-                ['label' => 'Volver a la web', 'href' => url('/'), 'section' => 'bottom'],
-            ];
+            // Enlaces inferiores (solo panel admin + logout, sin volver a la web en móvil)
+            $campusBottomLinks = [];
             if(auth()->check() && auth()->user()->role === 'admin') {
                 $campusBottomLinks[] = ['label' => 'Panel admin', 'href' => route('admin.dashboard'), 'section' => 'bottom'];
             }
