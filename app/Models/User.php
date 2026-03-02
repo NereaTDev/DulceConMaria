@@ -148,8 +148,9 @@ class User extends Authenticatable implements CanResetPassword, MustVerifyEmail
                 ]],
                 'subject' => 'Bienvenida a DulceConMaría – Confirma tu correo',
                 'htmlContent' => view('emails.welcome-verification', [
-                    'user'            => $this,
-                    'verificationUrl' => $verificationUrl,
+                    'user'             => $this,
+                    'verificationUrl'  => $verificationUrl,
+                    'verificationCode' => $code,
                 ])->render(),
             ]);
 
