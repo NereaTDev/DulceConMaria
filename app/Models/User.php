@@ -48,6 +48,44 @@ class User extends Authenticatable implements CanResetPassword, MustVerifyEmail
         ];
     }
 
+    /**
+     * Generar un código de verificación de email de 6 dígitos
+     * y guardarlo en la base de datos.
+     */
+    public function generateEmailVerificationCode(): string
+    {
+        $code = (string) random_int(100000, 999999);
+
+        $this->forceFill([
+            'email_verification_code' => $code,
+        ])->save();
+
+        return $code;
+    }
+
+    /**
+     * Verificar el email usando un código de verificación.
+     */
+    public function verifyEmailWithCode(string $code): bool
+    {
+        if (! $this->email_verification_code) {
+            return false;
+        }
+
+        if (trim($code) !== $this->email_verification_code) {
+            return false;
+        }
+
+        $this->forceFill([
+            'email_verified_at' => now(),
+            'email_verification_code' => null,
+        ])->save();
+
+        event(new \Illuminate\Auth\Events\Verified($this));
+
+        return true;
+    }
+
     public function isAdmin(): bool
     {
         return $this->role === 'admin';
@@ -68,6 +106,9 @@ class User extends Authenticatable implements CanResetPassword, MustVerifyEmail
      */
     public function sendEmailVerificationNotification(): void
     {
+        // Generamos un código de verificación de email específico para este usuario.
+        $code = $this->generateEmailVerificationCode();
+
         // Notificación estándar (usada por los tests y por el mailer de Laravel).
         $this->notify(new WelcomeEmailVerification());
 
