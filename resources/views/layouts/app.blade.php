@@ -73,15 +73,25 @@
 
                 // Enlaces inferiores (cross: campus / admin / login)
                 $mainBottomLinks = [];
+
                 if(auth()->check()) {
+                    // Usuario logueado: acceso al campus, panel admin y opción de cerrar sesión
                     $mainBottomLinks[] = ['label' => 'Mi campus', 'href' => route('campus'), 'section' => 'bottom'];
                     if(auth()->user()->role === 'admin') {
                         $mainBottomLinks[] = ['label' => 'Panel admin', 'href' => route('admin.dashboard'), 'section' => 'bottom'];
                     }
+                    $mainBottomLinks[] = [
+                        'label'   => 'Cerrar sesión',
+                        'href'    => route('logout'),
+                        'variant' => 'danger',
+                        'section' => 'bottom',
+                        'method'  => 'post',
+                    ];
                 } else {
+                    // Invitado: login + CTA de inscripción
                     $mainBottomLinks[] = ['label' => 'Iniciar sesión', 'href' => route('login'), 'section' => 'bottom'];
+                    $mainBottomLinks[] = ['label' => 'Inscribirme', 'href' => url('/') . '#cta', 'variant' => 'primary', 'section' => 'bottom'];
                 }
-                $mainBottomLinks[] = ['label' => 'Inscribirme', 'href' => url('/') . '#cta', 'variant' => 'primary', 'section' => 'bottom'];
 
                 $mainMenuLinks = array_merge($mainMenuLinks, $mainBottomLinks);
             @endphp
