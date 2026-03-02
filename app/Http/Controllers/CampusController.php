@@ -27,7 +27,34 @@ class CampusController extends Controller
 
             $courses = $enrollments->pluck('course')->filter();
         }
-        $currentCourse = $courses->first();
+
+        // Determinar curso activo cuando hay varios
+        $currentCourse = null;
+        if ($courses->isNotEmpty()) {
+            $requestedId = $request->integer('course');
+
+            if ($requestedId) {
+                // Solo permitimos seleccionar cursos a los que el usuario tiene acceso
+                $currentCourse = $courses->firstWhere('id', $requestedId);
+                if ($currentCourse) {
+                    // Persistimos en sesión la elección del usuario
+                    session(['campus.current_course_id' => $currentCourse->id]);
+                }
+            }
+
+            if (! $currentCourse) {
+                $savedId = (int) session('campus.current_course_id');
+                if ($savedId) {
+                    $currentCourse = $courses->firstWhere('id', $savedId);
+                }
+            }
+
+            if (! $currentCourse) {
+                $currentCourse = $courses->first();
+                session(['campus.current_course_id' => $currentCourse->id]);
+            }
+        }
+
         $previewLesson = null;
         $currentCourseProgress = null;
 

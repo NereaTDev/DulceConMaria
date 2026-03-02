@@ -45,8 +45,9 @@
                             Continuar curso
                         </a>
                     @elseif($currentCourse)
-                        <a href="{{ route('courses.show', $currentCourse->slug) }}" class="inline-flex items-center justify-center rounded-full bg-[#FF4B88] text-white px-4 py-2 text-sm font-semibold hover:bg-[#FF306F]">
-                            Ver curso
+                        {{-- No hay lección destacada todavía, mantenemos al usuario en el campus --}}
+                        <a href="{{ route('campus', ['course' => $currentCourse->id]) }}" class="inline-flex items-center justify-center rounded-full bg-[#FF4B88] text-white px-4 py-2 text-sm font-semibold hover:bg-[#FF306F]">
+                            Ver curso en el campus
                         </a>
                     @else
                         <a href="{{ url('/') }}#hero" class="inline-flex items-center justify-center rounded-full bg-[#FF4B88] text-white px-4 py-2 text-sm font-semibold hover:bg-[#FF306F]">
@@ -57,14 +58,9 @@
                     @if($currentCourse && $courses->count() > 1)
                         <div class="flex flex-wrap gap-1.5 justify-end">
                             @foreach($courses as $course)
-                                @php
-                                    $firstLesson = $course->lessons->sortBy('order')->first();
-                                @endphp
-                                @if($firstLesson)
-                                    <a href="{{ route('campus.lessons.show', $firstLesson) }}" class="text-[11px] px-2.5 py-1 rounded-full border {{ $course->id === $currentCourse->id ? 'border-[#FF4B88] text-[#FF4B88]' : 'border-[#F7D2E4] text-[#5B4A54]' }}">
-                                        {{ $course->title }}
-                                    </a>
-                                @endif
+                                <a href="{{ route('campus', ['course' => $course->id]) }}" class="text-[11px] px-2.5 py-1 rounded-full border {{ $course->id === $currentCourse->id ? 'border-[#FF4B88] text-[#FF4B88]' : 'border-[#F7D2E4] text-[#5B4A54]' }}">
+                                    {{ $course->title }}
+                                </a>
                             @endforeach
                         </div>
                     @endif
