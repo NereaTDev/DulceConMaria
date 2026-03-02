@@ -95,7 +95,11 @@
         <footer class="border-t border-[#F7D2E4] bg-[#FFF5FB] mt-10">
             <div class="max-w-5xl mx-auto px-4 py-6 text-xs text-[#7B6B75] flex flex-col md:flex-row md:items-center md:justify-between gap-2">
                 <p>DulceConMaría - {{ date('Y') }} © · Todos los derechos reservados.</p>
-                <p class="text-[11px]">Curso básico de bombones de chocolate · Hecho con cariño y mucho cacao.</p>
+                <div class="flex flex-wrap gap-3 md:justify-end">
+                    <a href="{{ route('privacy') }}" class="hover:text-[#FF4B88]">Política de privacidad</a>
+                    <span class="opacity-50">·</span>
+                    <a href="{{ route('cookies') }}" class="hover:text-[#FF4B88]">Política de cookies</a>
+                </div>
             </div>
         </footer>
     </div>
