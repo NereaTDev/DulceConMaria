@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Lesson;
 use App\Models\LessonProgress;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class LessonController extends Controller
 {
@@ -79,7 +80,7 @@ class LessonController extends Controller
             }
         }
 
-        LessonProgress::updateOrCreate(
+        $progress = LessonProgress::updateOrCreate(
             [
                 'user_id'   => $user->id,
                 'lesson_id' => $lesson->id,
@@ -88,6 +89,15 @@ class LessonController extends Controller
                 'completed_at' => now(),
             ]
         );
+
+        // Log local opcional para depuración (no se envía nada a Honeybadger)
+        Log::info('Lesson progress marked as completed', [
+            'user_id'    => $user->id,
+            'lesson_id'  => $lesson->id,
+            'course_id'  => $course->id,
+            'progress_id'=> $progress->id,
+            'env'        => app()->environment(),
+        ]);
 
         return response()->json(['status' => 'ok']);
     }

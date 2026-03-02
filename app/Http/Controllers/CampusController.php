@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\LessonProgress;
+use App\Models\Course;
 
 class CampusController extends Controller
 {
@@ -11,13 +12,21 @@ class CampusController extends Controller
     {
         $user = $request->user();
 
-        // Todos los cursos en los que el usuario tiene inscripciones activas (no canceladas)
-        $enrollments = $user->enrollments()
-            ->where('status', '!=', 'cancelled')
-            ->with('course.lessons', 'course.recipes')
-            ->get();
+        // Cursos visibles para el usuario
+        if ($user->role === 'admin') {
+            // Admin: ver todos los cursos activos
+            $courses = Course::with(['lessons', 'recipes'])
+                ->where('is_active', true)
+                ->get();
+        } else {
+            // Alumna: sólo cursos en los que tiene inscripciones activas (no canceladas)
+            $enrollments = $user->enrollments()
+                ->where('status', '!=', 'cancelled')
+                ->with('course.lessons', 'course.recipes')
+                ->get();
 
-        $courses = $enrollments->pluck('course')->filter();
+            $courses = $enrollments->pluck('course')->filter();
+        }
         $currentCourse = $courses->first();
         $previewLesson = null;
         $currentCourseProgress = null;
