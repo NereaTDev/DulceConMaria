@@ -98,8 +98,6 @@
                 <div class="flex flex-wrap gap-3 md:justify-end">
                     <a href="{{ route('privacy') }}" class="hover:text-[#FF4B88]">Política de privacidad</a>
                     <span class="opacity-50">·</span>
-                    <a href="{{ route('legal') }}" class="hover:text-[#FF4B88]">Aviso legal</a>
-                    <span class="opacity-50">·</span>
                     <a href="{{ route('cookies') }}" class="hover:text-[#FF4B88]">Política de cookies</a>
                 </div>
             </div>
