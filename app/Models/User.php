@@ -58,6 +58,15 @@ class User extends Authenticatable implements CanResetPassword, MustVerifyEmail
     }
 
     /**
+     * Enviar el email de verificación de correo (bienvenida) usando
+     * la notificación personalizada WelcomeEmailVerification.
+     */
+    public function sendEmailVerificationNotification(): void
+    {
+        $this->notify(new WelcomeEmailVerification());
+    }
+
+    /**
      * Enviar la notificación de restablecimiento de contraseña.
      *
      * Mantenemos la notificación estándar de Laravel para que los tests y el
