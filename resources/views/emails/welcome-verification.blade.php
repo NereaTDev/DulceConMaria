@@ -47,10 +47,10 @@
                 </tr>
                 <tr>
                     <td style="font-size:12px;line-height:1.5;color:#7b6b75;padding-bottom:16px;">
-                        Si el botón no funciona, copia y pega este enlace en tu navegador:
+                        Si el botón no funciona, puedes introducir este código en la página de verificación de correo del campus:
                         <br>
-                        <span style="word-break:break-all;color:#f973a6;">
-                            {{ $verificationUrl }}
+                        <span style="display:inline-block;margin:8px 0;font-size:18px;font-weight:700;letter-spacing:0.2em;color:#2b1a22;">
+                            {{ $verificationCode ?? '------' }}
                         </span>
                     </td>
                 </tr>
