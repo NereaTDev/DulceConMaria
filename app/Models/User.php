@@ -32,7 +32,9 @@ class User extends Authenticatable implements CanResetPassword, MustVerifyEmail
     ];
 
     protected $casts = [
-        'grant_all_courses' => 'boolean',
+        'grant_all_courses'       => 'boolean',
+        'has_seen_onboarding'     => 'boolean',
+        'dismissed_onboarding_at' => 'datetime',
     ];
 
     protected $hidden = [
@@ -44,7 +46,7 @@ class User extends Authenticatable implements CanResetPassword, MustVerifyEmail
     {
         return [
             'email_verified_at' => 'datetime',
-            'password' => 'hashed',
+            'password'         => 'hashed',
         ];
     }
 

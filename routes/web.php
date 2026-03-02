@@ -7,6 +7,7 @@ use App\Http\Controllers\RecipeController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\CampusController;
 use App\Http\Controllers\LessonController as FrontLessonController;
+use App\Http\Controllers\OnboardingController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\CourseController as AdminCourseController;
 use App\Http\Controllers\Admin\LessonController as AdminLessonController;
@@ -82,6 +83,11 @@ Route::prefix('admin')
         // Inscripciones: CRUD completo en admin
         Route::resource('enrollments', AdminEnrollmentController::class);
     });
+
+// Onboarding del campus: marcar como completado u omitido
+Route::post('/onboarding/complete', [OnboardingController::class, 'complete'])
+    ->middleware(['auth', 'verified'])
+    ->name('onboarding.complete');
 
 require __DIR__.'/auth.php';
 

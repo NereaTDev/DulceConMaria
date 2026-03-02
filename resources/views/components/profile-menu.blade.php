@@ -52,9 +52,15 @@
                 @endif
             @endif
 
-            {{-- Solo en variante full (campus) mostramos enlace al perfil --}}
+            {{-- Solo en variante full (campus) mostramos enlaces extra --}}
             @if(! $isCompact)
                 <a href="{{ route('campus.profile.edit') }}" class="block px-3 py-1.5 hover:bg-[#FFF5FB]">Perfil</a>
+
+                @if(! $user->has_seen_onboarding)
+                    <a href="{{ route('campus', ['showOnboarding' => 1]) }}" class="block px-3 py-1.5 hover:bg-[#FFF5FB]">
+                        Ver tutorial del campus
+                    </a>
+                @endif
             @endif
 
             {{-- Cerrar sesión --}}

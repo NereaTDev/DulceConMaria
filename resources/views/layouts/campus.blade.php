@@ -72,6 +72,11 @@
         @yield('content')
     </main>
 
+    {{-- Modal de onboarding del campus (solo campus, solo usuarias verificadas) --}}
+    @auth
+        <x-onboarding-modal :user="auth()->user()" />
+    @endauth
+
     <footer class="border-t border-[#F7D2E4] bg-white/90">
         <div id="campus-footer" class="max-w-6xl mx-auto px-4 py-4 text-[11px] text-[#7B6B75] flex justify-between">
             <span>DulceConMaría · Campus de chocolatería</span>
