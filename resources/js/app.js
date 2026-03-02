@@ -129,6 +129,8 @@ function dcInitLessonPlayers() {
         if (!lessonId || !videoId) return;
 
         let reported = false;
+        let logged80 = false;
+        let progressInterval = null;
 
         const markCompleted = () => {
             if (reported || !csrfToken) return;
@@ -154,13 +156,35 @@ function dcInitLessonPlayers() {
                 modestbranding: 1,
             },
             events: {
-                // En lugar de depender de intervalos y getDuration, marcamos la lección
-                // como completada cuando el vídeo llega al final. Es un criterio aún
-                // más estricto que el 80 % y más robusto en producción.
+                onReady: (event) => {
+                    const duration = event.target.getDuration();
+                    if (!duration || duration <= 0) return;
+
+                    // Intervalo para calcular progreso y marcar al 80 %
+                    progressInterval = setInterval(() => {
+                        if (!event.target || reported) return;
+                        const currentTime = event.target.getCurrentTime();
+                        if (!currentTime || currentTime <= 0) return;
+                        const progress = (currentTime / duration) * 100;
+
+                        if (!logged80 && progress >= 80) {
+                            logged80 = true;
+                            markCompleted();
+                            clearInterval(progressInterval);
+                            progressInterval = null;
+                        }
+                    }, 5000);
+                },
+
                 onStateChange: (event) => {
-                    if (reported) return;
                     const state = event.data;
+
                     if (state === window.YT.PlayerState.ENDED) {
+                        if (progressInterval) {
+                            clearInterval(progressInterval);
+                            progressInterval = null;
+                        }
+                        // Como respaldo, si por alguna razón no se marcó en el 80 %, marcamos al terminar.
                         markCompleted();
                     }
                 },

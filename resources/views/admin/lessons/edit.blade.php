@@ -29,7 +29,7 @@
                 <input type="number" name="order" value="{{ old('order', $lesson->order) }}" class="w-full border rounded px-3 py-2 text-sm" min="1" required>
             </div>
             <div>
-                <label class="block text-sm font-medium mb-1">URL del vídeo (opcional)</label>
+                <label class="block text-sm font-medium mb-1">URL del vídeo</label>
                 <input type="text" name="video_url" value="{{ old('video_url', $lesson->video_url) }}" class="w-full border rounded px-3 py-2 text-sm">
             </div>
         </div>
