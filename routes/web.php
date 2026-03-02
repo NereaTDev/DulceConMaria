@@ -21,6 +21,9 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+// Dossier del curso
+Route::view('/dossier', 'dossier')->name('dossier.show');
+
 // Página de contacto
 Route::get('/contacto', [ContactController::class, 'show'])->name('contact.show');
 Route::post('/contacto', [ContactController::class, 'store'])->name('contact.store');

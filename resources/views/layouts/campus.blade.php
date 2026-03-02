@@ -54,11 +54,11 @@
                 ['label' => 'Soporte (próximamente)'],
             ];
 
-            // Enlaces inferiores
-            $campusBottomLinks = [];
+            // Enlaces inferiores (cross: web / panel)
+            $campusBottomLinks = [
+                ['label' => 'Volver a la web', 'href' => url('/'), 'section' => 'bottom'],
+            ];
             if(auth()->check() && auth()->user()->role === 'admin') {
-                // Solo admin puede volver a la web desde el menú móvil del campus
-                $campusBottomLinks[] = ['label' => 'Volver a la web', 'href' => url('/'), 'section' => 'bottom'];
                 $campusBottomLinks[] = ['label' => 'Panel admin', 'href' => route('admin.dashboard'), 'section' => 'bottom'];
             }
             $campusBottomLinks[] = ['label' => 'Cerrar sesión', 'href' => route('logout'), 'variant' => 'danger', 'section' => 'bottom', 'method' => 'post'];
