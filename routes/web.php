@@ -33,11 +33,6 @@ Route::get('/campus', [CampusController::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('campus');
 
-// Página de tutorial / onboarding del campus
-Route::get('/campus/tutorial', [OnboardingController::class, 'show'])
-    ->middleware(['auth', 'verified'])
-    ->name('campus.onboarding');
-
 // Rutas que requieren login y email verificado
 Route::middleware(['auth', 'verified'])->group(function () {
     // Página privada del curso por slug (dentro del campus)

@@ -1,6 +1,12 @@
 @props(['user'])
 
-@if($user && $user->email_verified_at && ! $user->has_seen_onboarding && ! $user->dismissed_onboarding_at)
+@php
+    $forceShow = request()->boolean('showOnboarding');
+@endphp
+
+@if($user && $user->email_verified_at && (
+    (! $user->has_seen_onboarding && ! $user->dismissed_onboarding_at) || $forceShow
+))
 <div x-data="{ open: true }" x-show="open" x-cloak
      class="fixed inset-0 z-40 flex items-center justify-center bg-black/40">
     <div class="bg-white w-full max-w-md mx-4 rounded-3xl border border-[#F7D2E4] shadow-[0_10px_30px_rgba(15,23,42,0.12)] p-6">

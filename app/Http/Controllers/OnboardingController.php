@@ -9,25 +9,10 @@ use Illuminate\View\View;
 class OnboardingController extends Controller
 {
     /**
-     * Página de tutorial del campus.
-     */
-    public function show(Request $request): View|RedirectResponse
-    {
-        $user = $request->user();
-
-        if (! $user) {
-            return redirect()->route('login');
-        }
-
-        if (! $user->email_verified_at) {
-            return redirect()->route('verification.notice');
-        }
-
-        return view('campus.onboarding');
-    }
-
-    /**
      * Marcar que el usuario ha completado u omitido el onboarding.
+     *
+     * Esta acción solo actualiza flags en BBDD; el tutorial se muestra
+     * íntegramente en el modal del propio campus (sin cambiar de URL).
      */
     public function complete(Request $request): RedirectResponse
     {
@@ -45,7 +30,7 @@ class OnboardingController extends Controller
                 'dismissed_onboarding_at' => null,
             ])->save();
 
-            return redirect()->route('campus.onboarding');
+            return back();
         }
 
         if ($action === 'skip') {
