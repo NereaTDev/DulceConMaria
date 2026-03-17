@@ -26,7 +26,10 @@ Route::view('/dossier', 'dossier')->name('dossier.show');
 
 // Página de contacto
 Route::get('/contacto', [ContactController::class, 'show'])->name('contact.show');
-Route::post('/contacto', [ContactController::class, 'store'])->name('contact.store');
+// Protegemos el formulario con un throttle suave para evitar abusos automatizados
+Route::post('/contacto', [ContactController::class, 'store'])
+    ->middleware('throttle:5,1') // máx. 5 envíos por minuto desde la misma IP
+    ->name('contact.store');
 
 // Páginas legales
 Route::view('/privacidad', 'legal.privacy')->name('privacy');
