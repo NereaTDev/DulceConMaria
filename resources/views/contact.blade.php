@@ -65,6 +65,19 @@
                         @enderror
                     </div>
 
+                    {{-- Honeypot anti-spam: campo oculto que los usuarios reales no ven --}}
+                    <div class="hidden" aria-hidden="true">
+                        <label for="website_hp" class="block text-xs mb-1">No rellenes este campo</label>
+                        <input
+                            id="website_hp"
+                            name="website_hp"
+                            type="text"
+                            tabindex="-1"
+                            autocomplete="off"
+                            class="block w-full rounded-full border border-[#F7D2E4] px-4 py-2 text-sm text-[#2B1A22]"
+                        >
+                    </div>
+
                     <div class="pt-2">
                         <button type="submit" class="inline-flex items-center justify-center rounded-full bg-[#F990B7] px-6 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-[#F5387E] transition">
                             Enviar mensaje

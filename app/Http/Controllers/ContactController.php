@@ -20,10 +20,26 @@ class ContactController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([
-            'name'    => ['required', 'string', 'max:255'],
-            'email'   => ['required', 'email', 'max:255'],
-            'message' => ['nullable', 'string', 'max:2000'],
+            'name'       => ['required', 'string', 'max:255'],
+            'email'      => ['required', 'email', 'max:255'],
+            'message'    => ['nullable', 'string', 'max:2000'],
+            // Honeypot: los bots suelen rellenarlo, los humanos no lo ven
+            'website_hp' => ['nullable', 'string', 'max:255'],
         ]);
+
+        // Si el honeypot viene relleno, asumimos que es spam y no enviamos nada
+        if (! empty($validated['website_hp'])) {
+            Log::info('Contacto bloqueado por honeypot', [
+                'name'       => $validated['name'] ?? null,
+                'email'      => $validated['email'] ?? null,
+                'website_hp' => $validated['website_hp'],
+                'ip'         => $request->ip(),
+                'user_agent' => $request->userAgent(),
+            ]);
+
+            // Respondemos como si todo hubiera ido bien para no dar pistas al bot
+            return back()->with('status', 'contact.sent');
+        }
 
         $toEmail = config('mail.from.address', 'nerea.trebol@yahoo.es');
 
