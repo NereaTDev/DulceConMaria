@@ -32,6 +32,7 @@ class UserController extends Controller
             'city'                  => ['nullable','string','max:100'],
             'country'               => ['nullable','string','max:100'],
             'instagram'             => ['nullable','string','max:100'],
+            'notes'                 => ['nullable','string'],
             'password'              => ['required','string','min:8','confirmed'],
             'role'                  => ['required','in:user,admin'],
             'grant_all_courses'     => ['nullable','boolean'],
@@ -133,14 +134,11 @@ class UserController extends Controller
 
             return redirect()->route('admin.users.show', $user)->with('status', 'Usuario actualizado');
         } catch (\Throwable $e) {
-            if (app()->environment('production')) {
-                return response(
-                    'Error al actualizar usuario: '.$e->getMessage(),
-                    500
-                );
-            }
+            report($e);
 
-            throw $e;
+            return back()
+                ->withInput()
+                ->withErrors(['general' => 'Ha ocurrido un error al actualizar el usuario. Inténtalo de nuevo.']);
         }
     }
 

@@ -9,15 +9,17 @@ class PasswordResetUnknownEmailTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_unknown_email_shows_validation_error_and_does_not_redirect_as_if_sent(): void
+    public function test_unknown_email_returns_same_success_response_as_known_email(): void
     {
+        // Security: we must NOT reveal whether the email exists in the database.
+        // The response must always look like a success to prevent user enumeration.
         $response = $this->from('/forgot-password')->post('/forgot-password', [
             'email' => 'no-existe@example.com',
         ]);
 
         $response
             ->assertStatus(302)
-            ->assertRedirect('/forgot-password')
-            ->assertSessionHasErrors('email');
+            ->assertSessionHas('status')
+            ->assertSessionMissing('errors');
     }
 }

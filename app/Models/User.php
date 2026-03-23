@@ -58,10 +58,10 @@ class User extends Authenticatable implements CanResetPassword, MustVerifyEmail
         $code = (string) random_int(100000, 999999);
 
         $this->forceFill([
-            'email_verification_code' => $code,
+            'email_verification_code' => hash_hmac('sha256', $code, config('app.key')),
         ])->save();
 
-        return $code;
+        return $code; // Return the plain code to be sent by email, never stored plain
     }
 
     /**
@@ -73,7 +73,9 @@ class User extends Authenticatable implements CanResetPassword, MustVerifyEmail
             return false;
         }
 
-        if (trim($code) !== $this->email_verification_code) {
+        $hashed = hash_hmac('sha256', trim($code), config('app.key'));
+
+        if (! hash_equals($this->email_verification_code, $hashed)) {
             return false;
         }
 
