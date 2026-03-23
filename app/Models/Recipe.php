@@ -13,6 +13,7 @@ class Recipe extends Model
         'title',
         'ingredients',
         'description',
+        'image_path',
         'is_public',
     ];
 

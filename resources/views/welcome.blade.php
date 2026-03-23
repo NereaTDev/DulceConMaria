@@ -36,81 +36,141 @@
 
     {{-- CONTENIDO DEL CURSO: carrusel de unidades --}}
     <x-section id="cursos" title="Contenido del curso" subtitle="Un recorrido en varias unidades para dominar los bombones paso a paso.">
-        <div class="overflow-x-auto pb-4">
-            <div class="flex gap-4 md:gap-6 min-w-full snap-x snap-mandatory">
-                @php
-                    $units = [
-                        [
-                            'label' => 'Unidad 1',
-                            'title' => 'Introducción',
-                            'bg' => '#FFE0EB',
-                            'text' => '#2B1A22',
-                            'bullets' => [
-                                'Tipos de chocolate y características.',
-                                'Material básico y preparación del espacio de trabajo.',
-                                'Conceptos clave de temperado.',
-                            ],
-                            'image' => '/assets/course/unit-1.png',
-                        ],
-                        [
-                            'label' => 'Unidad 2',
-                            'title' => 'Preparación',
-                            'bg' => '#E0E5FF',
-                            'text' => '#0F172A',
-                            'bullets' => [
-                                'Moldeo y desmolde de bombones.',
-                                'Rellenos básicos y texturas.',
-                                'Errores frecuentes y cómo corregirlos.',
-                            ],
-                            'image' => '/assets/course/unit-2.png',
-                        ],
-                        [
-                            'label' => 'Unidad 3',
-                            'title' => 'Montaje y presentación',
-                            'bg' => '#FFF0E2',
-                            'text' => '#2B1A22',
-                            'bullets' => [
-                                'Decoraciones sencillas con efecto profesional.',
-                                'Empaquetado y conservación.',
-                                'Ideas para regalar o vender tus bombones.',
-                            ],
-                            'image' => '/assets/course/unit-3.png',
-                        ],
-                        [
-                            'label' => 'Unidad 4',
-                            'title' => 'Bombones avanzados',
-                            'bg' => '#D5E1FF',
-                            'text' => '#0F172A',
-                            'bullets' => [
-                                'Saborizaciones avanzadas.',
-                                'Decoraciones creativas.',
-                                'Tips para producción en pequeña escala.',
-                            ],
-                            'image' => '/assets/course/unit-4.png',
-                        ],
-                    ];
-                @endphp
+        @php
+            $units = [
+                [
+                    'label' => 'Unidad 1',
+                    'title' => 'Introducción',
+                    'bg' => '#FFE0EB',
+                    'text' => '#2B1A22',
+                    'bullets' => [
+                        'Tipos de chocolate y características.',
+                        'Material básico y preparación del espacio de trabajo.',
+                        'Conceptos clave de temperado.',
+                    ],
+                    'image' => '/assets/course/unit-1.png',
+                ],
+                [
+                    'label' => 'Unidad 2',
+                    'title' => 'Preparación',
+                    'bg' => '#E0E5FF',
+                    'text' => '#0F172A',
+                    'bullets' => [
+                        'Moldeo y desmolde de bombones.',
+                        'Rellenos básicos y texturas.',
+                        'Errores frecuentes y cómo corregirlos.',
+                    ],
+                    'image' => '/assets/course/unit-2.png',
+                ],
+                [
+                    'label' => 'Unidad 3',
+                    'title' => 'Montaje y presentación',
+                    'bg' => '#FFF0E2',
+                    'text' => '#2B1A22',
+                    'bullets' => [
+                        'Decoraciones sencillas con efecto profesional.',
+                        'Empaquetado y conservación.',
+                        'Ideas para regalar o vender tus bombones.',
+                    ],
+                    'image' => '/assets/course/unit-3.png',
+                ],
+                [
+                    'label' => 'Unidad 4',
+                    'title' => 'Bombones avanzados',
+                    'bg' => '#D5E1FF',
+                    'text' => '#0F172A',
+                    'bullets' => [
+                        'Saborizaciones avanzadas.',
+                        'Decoraciones creativas.',
+                        'Tips para producción en pequeña escala.',
+                    ],
+                    'image' => '/assets/course/unit-4.png',
+                ],
+            ];
+        @endphp
 
+        {{-- Carrusel full-width con navegación Alpine.js --}}
+        <div
+            x-data="{
+                current: 0,
+                total: {{ count($units) }},
+                goTo(index) {
+                    this.current = index;
+                    this.$refs.track.scrollTo({ left: index * this.$refs.track.offsetWidth, behavior: 'smooth' });
+                },
+                next() { if (this.current < this.total - 1) this.goTo(this.current + 1); },
+                prev() { if (this.current > 0) this.goTo(this.current - 1); },
+                syncOnScroll() {
+                    this.current = Math.round(this.$refs.track.scrollLeft / this.$refs.track.offsetWidth);
+                }
+            }"
+            class="relative left-1/2 -translate-x-1/2 w-screen"
+        >
+            {{-- Track --}}
+            <div
+                x-ref="track"
+                @scroll.passive="syncOnScroll()"
+                class="flex overflow-x-auto snap-x snap-mandatory [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+            >
                 @foreach($units as $unit)
-                    <article class="snap-start shrink-0 w-[85%] md:w-[420px] rounded-3xl p-6 md:p-8 flex flex-col md:grid md:grid-cols-[1.1fr,0.9fr] gap-4 items-center" style="background-color: {{ $unit['bg'] }}; color: {{ $unit['text'] }};">
-                        <div class="w-full">
-                            <p class="text-xs font-semibold mb-1" style="color: {{ $unit['text'] }}; opacity: 0.85;">{{ $unit['label'] }}</p>
-                            <h3 class="text-lg md:text-xl font-semibold mb-3">{{ $unit['title'] }}</h3>
-                            <ul class="text-xs md:text-sm space-y-1 list-disc list-inside opacity-90">
-                                @foreach($unit['bullets'] as $bullet)
-                                    <li>{{ $bullet }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
-                        <div class="w-full flex items-center justify-end md:justify-center">
-                            <div class="relative w-40 h-36 md:w-48 md:h-40">
-                                <img src="{{ $unit['image'] }}" alt="{{ $unit['title'] }}" class="w-full h-full object-cover rounded-[2.5rem] shadow-md border border-white/40" />
-                                <div class="absolute -right-4 top-1/2 -translate-y-1/2 hidden md:flex h-8 w-8 rounded-full bg-white/80 items-center justify-center text-[#2558D5] shadow">
-                                    <span class="text-sm">»</span>
-                                </div>
+                    <article
+                        class="snap-center shrink-0 w-screen flex items-center justify-center px-6 py-12 md:py-16"
+                        style="background-color: {{ $unit['bg'] }}; color: {{ $unit['text'] }};"
+                    >
+                        <div class="max-w-5xl w-full grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
+                            {{-- Texto --}}
+                            <div>
+                                <p class="text-xs font-semibold uppercase tracking-widest mb-3 opacity-60">{{ $unit['label'] }}</p>
+                                <h3 class="text-2xl md:text-4xl font-bold mb-6 leading-tight">{{ $unit['title'] }}</h3>
+                                <ul class="space-y-3 text-sm md:text-base opacity-90">
+                                    @foreach($unit['bullets'] as $bullet)
+                                        <li class="flex items-start gap-2">
+                                            <span class="mt-1 shrink-0 w-1.5 h-1.5 rounded-full opacity-60" style="background-color: {{ $unit['text'] }};"></span>
+                                            {{ $bullet }}
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                            {{-- Imagen --}}
+                            <div class="w-full">
+                                <img
+                                    src="{{ $unit['image'] }}"
+                                    alt="{{ $unit['title'] }}"
+                                    class="w-full aspect-[4/3] object-cover rounded-3xl shadow-lg border border-white/30"
+                                />
                             </div>
                         </div>
                     </article>
+                @endforeach
+            </div>
+
+            {{-- Botón anterior --}}
+            <button
+                x-show="current > 0"
+                x-transition
+                @click="prev()"
+                class="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/80 shadow-md flex items-center justify-center text-[#2558D5] hover:bg-white transition text-xl font-bold"
+                aria-label="Anterior"
+            >‹</button>
+
+            {{-- Botón siguiente --}}
+            <button
+                x-show="current < total - 1"
+                x-transition
+                @click="next()"
+                class="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/80 shadow-md flex items-center justify-center text-[#2558D5] hover:bg-white transition text-xl font-bold"
+                aria-label="Siguiente"
+            >›</button>
+
+            {{-- Indicadores de posición --}}
+            <div class="flex justify-center gap-2 py-4">
+                @foreach($units as $index => $unit)
+                    <button
+                        @click="goTo({{ $index }})"
+                        :class="current === {{ $index }} ? 'w-6 bg-[#2558D5]' : 'w-2 bg-gray-300'"
+                        class="h-2 rounded-full transition-all duration-300"
+                        aria-label="Ir a unidad {{ $index + 1 }}"
+                    ></button>
                 @endforeach
             </div>
         </div>
@@ -122,7 +182,7 @@
             <div class="px-6">
                 <h2 class="text-xl font-semibold text-[#2558D5]">Beneficios del Curso</h2>
             </div>
-            <div class="flex flex-wrap justify-center gap-10">
+            <div class="relative left-1/2 -translate-x-1/2 w-screen flex flex-wrap justify-center gap-10 px-4">
                 @foreach ([1,2,3,4] as $i)
                     @php
                         $texts = [

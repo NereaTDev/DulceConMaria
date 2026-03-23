@@ -1,3 +1,4 @@
+@use('Illuminate\Support\Facades\Storage')
 @extends('admin.layouts.app')
 
 @section('title', 'Editar receta · Admin')
@@ -5,7 +6,7 @@
 @section('content')
     <h1 class="text-2xl font-semibold mb-6">Editar receta</h1>
 
-    <form action="{{ route('admin.recipes.update', $recipe) }}" method="POST" class="space-y-6 max-w-2xl">
+    <form action="{{ route('admin.recipes.update', $recipe) }}" method="POST" enctype="multipart/form-data" class="space-y-6 max-w-2xl">
         @csrf
         @method('PUT')
 
@@ -47,6 +48,42 @@
                 @endforeach
             </select>
             <p class="text-xs text-slate-500 mt-1">Puedes seleccionar varias clases manteniendo pulsado Ctrl (Windows) o Cmd (Mac).</p>
+        </div>
+
+        <div
+            x-data="{
+                preview: '{{ $recipe->image_path ? Storage::url($recipe->image_path) : '' }}',
+                removed: false,
+                onFile(e) { const f = e.target.files[0]; if (f) { this.preview = URL.createObjectURL(f); this.removed = false; } },
+                remove() { this.preview = ''; this.removed = true; }
+            }"
+        >
+            <label class="block text-sm font-medium mb-1">Imagen de la receta</label>
+            <div class="flex items-start gap-4">
+                <label class="cursor-pointer flex flex-col items-center justify-center w-40 h-32 border-2 border-dashed border-slate-300 rounded-lg hover:border-pink-400 transition bg-slate-50 overflow-hidden shrink-0 relative">
+                    <template x-if="!preview">
+                        <div class="flex flex-col items-center gap-1 text-slate-400 text-xs text-center px-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 16.5V19a1 1 0 001 1h16a1 1 0 001-1v-2.5M16 10l-4-4m0 0L8 10m4-4v12"/></svg>
+                            Subir imagen
+                        </div>
+                    </template>
+                    <template x-if="preview">
+                        <img :src="preview" class="w-full h-full object-cover" alt="Preview" />
+                    </template>
+                    <input type="file" name="image" accept="image/jpeg,image/png,image/webp" class="hidden" @change="onFile($event)">
+                </label>
+                <div class="flex flex-col gap-2 mt-1">
+                    <p class="text-xs text-slate-500">JPG, PNG o WEBP · Máx. 2 MB</p>
+                    <button
+                        type="button"
+                        x-show="preview"
+                        @click="remove()"
+                        class="text-xs text-red-500 hover:underline text-left"
+                    >Eliminar imagen actual</button>
+                </div>
+            </div>
+            <input type="hidden" name="remove_image" :value="removed ? '1' : '0'">
+            @error('image')<p class="text-xs text-red-600 mt-1">{{ $message }}</p>@enderror
         </div>
 
         <div class="flex items-center gap-2">
