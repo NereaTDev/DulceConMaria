@@ -45,6 +45,7 @@ Route::middleware('auth')->group(function () {
         ->name('verification.code.show');
 
     Route::post('verify-email/code', [VerifyEmailCodeController::class, 'store'])
+        ->middleware('throttle:5,1')
         ->name('verification.code.verify');
 
     Route::get('verify-email/{id}/{hash}', VerifyEmailController::class)

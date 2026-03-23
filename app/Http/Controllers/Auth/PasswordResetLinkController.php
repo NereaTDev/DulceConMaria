@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
@@ -30,36 +29,15 @@ class PasswordResetLinkController extends Controller
             'email' => ['required', 'email'],
         ]);
 
-        // No queremos enviar correos a direcciones que no existen en nuestra base de datos.
-        $exists = User::where('email', $request->input('email'))->exists();
-
-        if (! $exists) {
-            return back()
-                ->withInput($request->only('email'))
-                ->withErrors([
-                    'email' => 'No encontramos ningún usuario registrado con este correo.',
-                ]);
-        }
-
-        // En este punto el correo existe: enviamos el enlace de reseteo usando el broker de contraseñas.
+        // Always attempt to send — Password::sendResetLink silently skips unknown emails.
+        // Never reveal whether the email exists in the database (user enumeration prevention).
         try {
-            $status = Password::sendResetLink(
-                $request->only('email')
-            );
+            Password::sendResetLink($request->only('email'));
         } catch (\Throwable $e) {
-            // Si falla el SMTP u otro error interno, no queremos un 500 en la cara del usuario.
             report($e);
-
-            return back()
-                ->withInput($request->only('email'))
-                ->withErrors([
-                    'email' => 'Ha ocurrido un problema al enviar el correo de recuperación. Inténtalo de nuevo en unos minutos.',
-                ]);
         }
 
-        return $status == Password::RESET_LINK_SENT
-                    ? back()->with('status', __($status))
-                    : back()->withInput($request->only('email'))
-                        ->withErrors(['email' => __($status)]);
+        // Return the same success message regardless of whether the email was found.
+        return back()->with('status', __('passwords.sent'));
     }
 }
