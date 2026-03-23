@@ -32,6 +32,7 @@ class UserController extends Controller
             'city'                  => ['nullable','string','max:100'],
             'country'               => ['nullable','string','max:100'],
             'instagram'             => ['nullable','string','max:100'],
+            'notes'                 => ['nullable','string'],
             'password'              => ['required','string','min:8','confirmed'],
             'role'                  => ['required','in:user,admin'],
             'grant_all_courses'     => ['nullable','boolean'],
