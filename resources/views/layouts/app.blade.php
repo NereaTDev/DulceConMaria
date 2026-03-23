@@ -17,6 +17,7 @@
     @unless(app()->environment('testing'))
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     @endunless
+    @stack('styles')
 </head>
 <body class="bg-[#FFF5FB] text-slate-900 antialiased">
     <div class="min-h-screen flex flex-col">

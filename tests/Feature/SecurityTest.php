@@ -25,26 +25,28 @@ class SecurityTest extends TestCase
         $response->assertHeaderMissing('X-Powered-By');
     }
 
-    public function test_csp_header_present(): void
+    public function test_csp_header_present_in_production(): void
     {
+        // CSP is only sent in production to avoid blocking the Vite HMR dev server.
+        $this->app->detectEnvironment(fn () => 'production');
+
         $response = $this->get('/');
 
         $csp = $response->headers->get('Content-Security-Policy');
-        $this->assertNotNull($csp, 'Content-Security-Policy header must be present');
+        $this->assertNotNull($csp, 'Content-Security-Policy header must be present in production');
         $this->assertStringContainsString("default-src 'self'", $csp);
         $this->assertStringContainsString("form-action 'self'", $csp);
         $this->assertStringContainsString("object-src 'none'", $csp);
         $this->assertStringContainsString("frame-src 'none'", $csp);
+        $this->assertStringContainsString("upgrade-insecure-requests", $csp);
     }
 
-    public function test_csp_header_present_on_auth_pages(): void
+    public function test_csp_header_not_sent_outside_production(): void
     {
-        $response = $this->get('/login');
+        // In local/dev the Vite HMR server is on a different host — CSP would break assets.
+        $response = $this->get('/');
 
-        $this->assertNotNull(
-            $response->headers->get('Content-Security-Policy'),
-            'CSP must be present on auth pages too'
-        );
+        $response->assertHeaderMissing('Content-Security-Policy');
     }
 
     public function test_hsts_header_not_set_outside_production(): void

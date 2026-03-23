@@ -8,13 +8,10 @@ class RecipeController extends Controller
 {
     public function index()
     {
-        // Receta destacada (la más reciente marcada como pública) para el recetario público
-        $recipe = Recipe::where('is_public', true)
-            ->orderByDesc('created_at')
-            ->first();
+        $recipes = Recipe::where('is_public', true)
+            ->orderBy('title')
+            ->get();
 
-        return view('recipes.index', [
-            'recipe' => $recipe,
-        ]);
+        return view('recipes.index', compact('recipes'));
     }
 }

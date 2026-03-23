@@ -7,6 +7,7 @@ use App\Models\Course;
 use App\Models\Lesson;
 use App\Models\Recipe;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class RecipeController extends Controller
 {
@@ -30,6 +31,7 @@ class RecipeController extends Controller
             'title'       => ['required','string','max:255'],
             'ingredients' => ['required','string'],
             'description' => ['required','string'],
+            'image'       => ['nullable','image','mimes:jpeg,jpg,png,webp','max:2048'],
             'lesson_ids'  => ['array'],
             'lesson_ids.*'=> ['integer','exists:lessons,id'],
         ]);
@@ -39,11 +41,16 @@ class RecipeController extends Controller
             ->filter()
             ->values();
 
+        $imagePath = $request->hasFile('image')
+            ? $request->file('image')->store('recipes', 'public')
+            : null;
+
         $recipe = Recipe::create([
             'course_id'   => $data['course_id'] ?? null,
             'title'       => $data['title'],
             'ingredients' => $ingredientsArray,
             'description' => $data['description'],
+            'image_path'  => $imagePath,
             'is_public'   => $request->boolean('is_public'),
         ]);
 
@@ -68,6 +75,8 @@ class RecipeController extends Controller
             'title'       => ['required','string','max:255'],
             'ingredients' => ['required','string'],
             'description' => ['required','string'],
+            'image'       => ['nullable','image','mimes:jpeg,jpg,png,webp','max:2048'],
+            'remove_image'=> ['nullable','boolean'],
             'lesson_ids'  => ['array'],
             'lesson_ids.*'=> ['integer','exists:lessons,id'],
         ]);
@@ -77,11 +86,22 @@ class RecipeController extends Controller
             ->filter()
             ->values();
 
+        $imagePath = $recipe->image_path;
+
+        if ($request->hasFile('image')) {
+            if ($imagePath) Storage::disk('public')->delete($imagePath);
+            $imagePath = $request->file('image')->store('recipes', 'public');
+        } elseif ($request->boolean('remove_image') && $imagePath) {
+            Storage::disk('public')->delete($imagePath);
+            $imagePath = null;
+        }
+
         $recipe->update([
             'course_id'   => $data['course_id'] ?? null,
             'title'       => $data['title'],
             'ingredients' => $ingredientsArray,
             'description' => $data['description'],
+            'image_path'  => $imagePath,
             'is_public'   => $request->boolean('is_public'),
         ]);
 
@@ -92,6 +112,9 @@ class RecipeController extends Controller
 
     public function destroy(Recipe $recipe)
     {
+        if ($recipe->image_path) {
+            Storage::disk('public')->delete($recipe->image_path);
+        }
         $recipe->delete();
         return redirect()->route('admin.recipes.index')->with('status', 'Receta eliminada');
     }

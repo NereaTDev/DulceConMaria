@@ -29,22 +29,25 @@ class SecurityHeaders
             $response->headers->set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
         }
 
-        // Content Security Policy
-        // Adjustments needed if you load external fonts/scripts later (e.g. Stripe JS).
-        $csp = implode('; ', [
-            "default-src 'self'",
-            "script-src 'self' 'unsafe-inline'",   // Alpine.js inline scripts require unsafe-inline
-            "style-src 'self' 'unsafe-inline'",    // Tailwind purged CSS + inline styles
-            "img-src 'self' data: https:",          // Allow HTTPS images (e.g. thumbnails)
-            "font-src 'self' data:",
-            "connect-src 'self'",
-            "frame-src 'none'",
-            "object-src 'none'",
-            "base-uri 'self'",
-            "form-action 'self'",
-            "upgrade-insecure-requests",
-        ]);
-        $response->headers->set('Content-Security-Policy', $csp);
+        // Content Security Policy — only in production.
+        // In local/dev the Vite HMR server runs on a different host/port,
+        // so applying CSP would block all assets. No need to restrict in dev anyway.
+        if (app()->isProduction()) {
+            $csp = implode('; ', [
+                "default-src 'self'",
+                "script-src 'self' 'unsafe-inline'",   // Alpine.js inline scripts require unsafe-inline
+                "style-src 'self' 'unsafe-inline'",    // Tailwind purged CSS + inline styles
+                "img-src 'self' data: blob: https:",
+                "font-src 'self' data:",
+                "connect-src 'self'",
+                "frame-src 'none'",
+                "object-src 'none'",
+                "base-uri 'self'",
+                "form-action 'self'",
+                "upgrade-insecure-requests",
+            ]);
+            $response->headers->set('Content-Security-Policy', $csp);
+        }
 
         return $response;
     }

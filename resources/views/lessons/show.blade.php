@@ -81,18 +81,18 @@
             @if($lesson->recipes->count())
                 <div class="bg-white border border-[#F7D2E4] rounded-2xl shadow-sm p-5 mt-4">
                     <h2 class="text-lg font-semibold text-[#2B1A22] mb-3">Recetas de esta clase</h2>
-                    <div class="grid md:grid-cols-2 gap-4">
+                    <div class="gap-4">
                         @foreach($lesson->recipes as $recipe)
-                            <article class="border border-[#F7D2E4] rounded-xl p-3 text-sm text-[#5B4A54]">
+                            <article class="p-3 text-sm text-[#5B4A54]">
                                 <h3 class="font-semibold text-[#2B1A22] mb-1">{{ $recipe->title }}</h3>
                                 @if(is_array($recipe->ingredients))
-                                    <ul class="text-xs list-disc list-inside space-y-0.5 mb-2">
+                                    <ul class="text-sm list-disc list-inside space-y-0.5 mb-2 pb-2 border-b border-[#F7D2E4]">
                                         @foreach($recipe->ingredients as $ingredient)
                                             <li>{{ $ingredient }}</li>
                                         @endforeach
                                     </ul>
                                 @endif
-                                <p class="text-xs text-[#7B6B75] line-clamp-3">{{ $recipe->description }}</p>
+                                <p class="text-sm text-[#7B6B75] line-clamp-3">{{ $recipe->description }}</p>
                             </article>
                         @endforeach
                     </div>
