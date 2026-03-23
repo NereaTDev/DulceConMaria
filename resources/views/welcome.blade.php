@@ -132,7 +132,7 @@
                             'Al finalizar el curso, estarás listo para sorprender a tus amigos y familiares con tus propios bombones artesanales.',
                         ];
                     @endphp
-                    <article class="w-[270px] h-[350px] bg-[#F8E4EB] rounded-lg flex flex-col items-center justify-center px-6">
+                    <article class="w-[230px] h-[300px] bg-[#F8E4EB] rounded-lg flex flex-col items-center justify-center px-6">
                         <div class="flex flex-col items-center gap-8">
                             <img src="/assets/cardsIcon{{ $i }}.png" alt="Beneficio {{ $i }}" class="w-1/3 mb-2" />
                             <h6 class="text-center text-[16px] font-semibold text-[#2558D5]">{{ $texts[$i-1] }}</h6>
