@@ -35,7 +35,7 @@ class SecurityHeaders
         if (app()->isProduction()) {
             $csp = implode('; ', [
                 "default-src 'self'",
-                "script-src 'self' 'unsafe-inline'",   // Alpine.js inline scripts require unsafe-inline
+                "script-src 'self' 'unsafe-inline' 'unsafe-eval'",   // Alpine.js requires unsafe-inline (event handlers) + unsafe-eval (expression evaluation)
                 "style-src 'self' 'unsafe-inline'",    // Tailwind purged CSS + inline styles
                 "img-src 'self' data: blob: https:",
                 "font-src 'self' data:",
