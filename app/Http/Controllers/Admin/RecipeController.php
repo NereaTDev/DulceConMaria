@@ -110,6 +110,13 @@ class RecipeController extends Controller
         return redirect()->route('admin.recipes.index')->with('status', 'Receta actualizada');
     }
 
+    public function togglePublic(Recipe $recipe)
+    {
+        $recipe->update(['is_public' => ! $recipe->is_public]);
+        $label = $recipe->is_public ? 'visible en el recetario' : 'oculta del recetario';
+        return back()->with('status', "«{$recipe->title}» ahora está {$label}.");
+    }
+
     public function destroy(Recipe $recipe)
     {
         if ($recipe->image_path) {
