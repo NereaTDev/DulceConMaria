@@ -90,6 +90,7 @@ Route::prefix('admin')
         Route::resource('courses', AdminCourseController::class);
         Route::resource('lessons', AdminLessonController::class)->except(['show']);
         Route::resource('recipes', AdminRecipeController::class)->except(['show']);
+        Route::patch('recipes/{recipe}/toggle-public', [AdminRecipeController::class, 'togglePublic'])->name('recipes.toggle-public');
         Route::resource('users', AdminUserController::class); // index, create, store, show, edit, update, destroy
         // Inscripciones: CRUD completo en admin
         Route::resource('enrollments', AdminEnrollmentController::class);
