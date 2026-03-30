@@ -1,4 +1,3 @@
-@use('Illuminate\Support\Facades\Storage')
 @extends('layouts.app')
 
 @section('title', 'Recetario · DulceConMaría')
@@ -150,7 +149,7 @@
                                 @if($recipe->image_path)
                                     <div class="mb-7">
                                         <img
-                                            src="{{ Storage::url($recipe->image_path) }}"
+                                            src="{{ $recipe->image_path }}"
                                             alt="{{ $recipe->title }}"
                                             class="w-full rounded-xl object-contain max-h-[420px] shadow"
                                         />

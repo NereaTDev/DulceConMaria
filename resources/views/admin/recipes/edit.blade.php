@@ -1,4 +1,3 @@
-@use('Illuminate\Support\Facades\Storage')
 @extends('admin.layouts.app')
 
 @section('title', 'Editar receta · Admin')
@@ -52,7 +51,7 @@
 
         <div
             x-data="{
-                preview: '{{ $recipe->image_path ? Storage::url($recipe->image_path) : '' }}',
+                preview: '{{ $recipe->image_path ?? '' }}',
                 removed: false,
                 onFile(e) { const f = e.target.files[0]; if (f) { this.preview = URL.createObjectURL(f); this.removed = false; } },
                 remove() { this.preview = ''; this.removed = true; }
