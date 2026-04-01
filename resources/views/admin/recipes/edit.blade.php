@@ -51,7 +51,7 @@
 
         <div
             x-data="{
-                preview: '{{ $recipe->image_path ?? '' }}',
+                preview: '{{ $recipe->image_url ?? '' }}',
                 removed: false,
                 onFile(e) { const f = e.target.files[0]; if (f) { this.preview = URL.createObjectURL(f); this.removed = false; } },
                 remove() { this.preview = ''; this.removed = true; }

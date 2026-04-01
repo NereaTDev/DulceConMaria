@@ -6,10 +6,16 @@ use App\Http\Controllers\Controller;
 use App\Models\Course;
 use App\Models\Lesson;
 use App\Models\Recipe;
+use Cloudinary\Cloudinary;
+use Cloudinary\Configuration\Configuration;
 use Illuminate\Http\Request;
 
 class RecipeController extends Controller
 {
+    private function cloudinary(): Cloudinary
+    {
+        return new Cloudinary(Configuration::instance(config('cloudinary.cloud_url')));
+    }
     public function index()
     {
         $recipes = Recipe::with('course')->orderByDesc('created_at')->paginate(20);
@@ -42,10 +48,10 @@ class RecipeController extends Controller
 
         $imageUrl = null;
         if ($request->hasFile('image')) {
-            $result = cloudinary()->upload($request->file('image')->getRealPath(), [
+            $result = $this->cloudinary()->uploadApi()->upload($request->file('image')->getRealPath(), [
                 'folder' => 'dulceconmaria/recipes',
             ]);
-            $imageUrl = $result->getSecurePath();
+            $imageUrl = $result['secure_url'];
         }
 
         $recipe = Recipe::create([
@@ -92,11 +98,11 @@ class RecipeController extends Controller
         $imageUrl = $recipe->image_path;
 
         if ($request->hasFile('image')) {
-            if ($imageUrl) $this->deleteFromCloudinary($imageUrl);
-            $result = cloudinary()->upload($request->file('image')->getRealPath(), [
+            if ($imageUrl && str_starts_with($imageUrl, 'http')) $this->deleteFromCloudinary($imageUrl);
+            $result = $this->cloudinary()->uploadApi()->upload($request->file('image')->getRealPath(), [
                 'folder' => 'dulceconmaria/recipes',
             ]);
-            $imageUrl = $result->getSecurePath();
+            $imageUrl = $result['secure_url'];
         } elseif ($request->boolean('remove_image') && $imageUrl) {
             $this->deleteFromCloudinary($imageUrl);
             $imageUrl = null;
@@ -125,7 +131,7 @@ class RecipeController extends Controller
 
     public function destroy(Recipe $recipe)
     {
-        if ($recipe->image_path) {
+        if ($recipe->image_path && str_starts_with($recipe->image_path, 'http')) {
             $this->deleteFromCloudinary($recipe->image_path);
         }
         $recipe->delete();
@@ -134,11 +140,11 @@ class RecipeController extends Controller
 
     private function deleteFromCloudinary(string $secureUrl): void
     {
-        // Extrae el public_id de la URL de Cloudinary
-        // Ejemplo: https://res.cloudinary.com/cloud/image/upload/v123/dulceconmaria/recipes/abc.jpg
-        // → public_id: dulceconmaria/recipes/abc
+        // Extract public_id from Cloudinary URL
+        // e.g. https://res.cloudinary.com/cloud/image/upload/v123/dulceconmaria/recipes/abc.jpg
+        // → dulceconmaria/recipes/abc
         if (preg_match('/\/upload\/(?:v\d+\/)?(.+)\.[a-z]+$/i', $secureUrl, $m)) {
-            cloudinary()->destroy($m[1]);
+            $this->cloudinary()->uploadApi()->destroy($m[1]);
         }
     }
 }
