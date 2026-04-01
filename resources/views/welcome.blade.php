@@ -136,7 +136,7 @@
                                 <img
                                     src="{{ $unit['image'] }}"
                                     alt="{{ $unit['title'] }}"
-                                    class="w-full aspect-[4/3] object-cover rounded-3xl shadow-lg border border-white/30"
+                                    class="w-full object-cover"
                                 />
                             </div>
                         </div>
